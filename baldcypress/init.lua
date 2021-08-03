@@ -160,7 +160,7 @@ minetest.register_node("baldcypress:liana", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	tiles = {"baldcypress_liana.png"},
-	use_texture_alpha = true,
+	use_texture_alpha = "clip",
 	inventory_image = "baldcypress_liana.png",
 	wield_image = "baldcypress_liana.png",
 	is_ground_content = false,
