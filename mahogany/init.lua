@@ -145,7 +145,7 @@ minetest.register_node("mahogany:creeper", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	tiles = {"mahogany_creeper.png"},
-	use_texture_alpha = true,
+	use_texture_alpha = "clip",
 	inventory_image = "mahogany_creeper.png",
 	wield_image = "mahogany_creeper.png",
 	node_box = {
@@ -247,10 +247,10 @@ if minetest.settings:get_bool("cool_fences", true) then
 		groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		sounds = default.node_sound_wood_defaults(),
 	}
-	default.register_fence("mahogany:fence", table.copy(fence)) 
+	default.register_fence("mahogany:fence", table.copy(fence))
 	fence.description = S("Mahogany Fence Rail")
 	default.register_fence_rail("mahogany:fence_rail", table.copy(fence))
-	
+
 	if minetest.get_modpath("doors") ~= nil then
 		fence.description = S("Mahogany Fence Gate")
 		doors.register_fencegate("mahogany:gate", table.copy(fence))

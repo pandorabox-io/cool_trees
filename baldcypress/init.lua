@@ -140,7 +140,7 @@ minetest.register_node("baldcypress:dry_branches", {
 	paramtype = "light",
 	paramtype2 = "facedir",
 	tiles = {"baldcypress_dry_branches.png"},
-	use_texture_alpha = true,
+	use_texture_alpha = "clip",
 	inventory_image = "baldcypress_dry_branches.png",
 	wield_image = "baldcypress_dry_branches.png",
 	node_box = {
@@ -224,10 +224,10 @@ if minetest.settings:get_bool("cool_fences", true) then
 		groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		sounds = default.node_sound_wood_defaults(),
 	}
-	default.register_fence("baldcypress:fence", table.copy(fence)) 
+	default.register_fence("baldcypress:fence", table.copy(fence))
 	fence.description = S("Bald Cypress Fence Rail")
 	default.register_fence_rail("baldcypress:fence_rail", table.copy(fence))
-	
+
 	if minetest.get_modpath("doors") ~= nil then
 		fence.description = S("Bald Cypress Fence Gate")
 		doors.register_fencegate("baldcypress:gate", table.copy(fence))
