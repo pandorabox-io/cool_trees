@@ -62,6 +62,7 @@ minetest.register_node("mahogany:sapling", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
+	use_texture_alpha = "clip",
 	on_timer = grow_new_mahogany_tree,
 	selection_box = {
 		type = "fixed",
@@ -147,6 +148,7 @@ minetest.register_node("mahogany:creeper", {
 	tiles = {"mahogany_creeper.png"},
 	inventory_image = "mahogany_creeper.png",
 	wield_image = "mahogany_creeper.png",
+	use_texture_alpha = "clip",
 	node_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
@@ -166,6 +168,7 @@ minetest.register_node("mahogany:flower_creeper", {
 	tiles = {"mahogany_flower_creeper.png"},
 	inventory_image = "mahogany_flower_creeper.png",
 	wield_image = "mahogany_flower_creeper.png",
+	use_texture_alpha = "clip",
 	node_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
@@ -185,6 +188,7 @@ minetest.register_node("mahogany:hanging_creeper", {
 	tiles = {"mahogany_hanging_creeper.png"},
 	inventory_image = "mahogany_hanging_creeper.png",
 	wield_image = "mahogany_hanging_creeper.png",
+	use_texture_alpha = "clip",
 	node_box = {
 		type = "fixed",
 		fixed = {-0.5, -0.5, 0.0, 0.5, 0.5, 0.0}
