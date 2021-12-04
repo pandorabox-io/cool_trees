@@ -213,3 +213,8 @@ if minetest.get_modpath("bonemeal") ~= nil then
 		{"willow:sapling", grow_new_willow_tree, "soil"},
 	})
 end
+
+-- Support for flowerpot
+if minetest.global_exists("flowerpot") then
+	flowerpot.register_node("willow:sapling")
+end
