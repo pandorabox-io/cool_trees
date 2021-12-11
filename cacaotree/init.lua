@@ -210,7 +210,7 @@ minetest.register_node("cacaotree:leaves", {
 	drop = {
 		max_items = 1,
 		items = {
-			{items = {"cacaotree:sapling"}, rarity = 20},
+			{items = {"cacaotree:sapling"}, rarity = 12},
 			{items = {"cacaotree:leaves"}}
 		}
 	},
