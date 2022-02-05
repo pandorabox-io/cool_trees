@@ -1,10 +1,22 @@
 # textdomain: maple
+
+
+### init.lua ###
+
+Maple Fence Gate=
+Maple Fence Rail=
+Maple Leaves=Hojas de arce
+Maple Slab=Losa de arce
+Maple Stair=Escaleras de arce
+Maple Tree Sapling=Retoño de árbol de arce
+# textdomain: maple
 Maple Trunk=Madera de arce
 Maple Wood=Tablas de arce
-Maple Leaves=Hojas de arce
-Maple Tree Sapling=Retoño de árbol de arce
-Maple Stair=Escaleras de arce
+Maple Wood Door=Puerta de arce
+Maple Wood Fence=
+
+
+##### not used anymore #####
+
 Inner Maple Stair=Escaleras de arce
 Outer Maple Stair=Escaleras de arce
-Maple Slab=Losa de arce
-Maple Wood Door=Puerta de arce

@@ -1,9 +1,21 @@
 # textdomain: willow
+
+
+### init.lua ###
+
+Willow Fence Gate=
+Willow Fence Rail=
+Willow Leaves=Hojas de sauce
+Willow Slab=Losa de sauce
+Willow Stair=Escaleras de sauce
+Willow Tree Sapling=Retoño de árbol de sauce
+# textdomain: willow
 Willow Trunk=Madera de sauce
 Willow Wood=Tablas de sauce
-Willow Leaves=Hojas de sauce
-Willow Tree Sapling=Retoño de árbol de sauce
-Willow Stair=Escaleras de sauce
+Willow Wood Fence=
+
+
+##### not used anymore #####
+
 Inner Willow Stair=Escaleras de sauce interior
 Outer Willow Stair=Escaleras de sauce exterior
-Willow Slab=Losa de sauce

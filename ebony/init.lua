@@ -203,7 +203,7 @@ minetest.register_node("ebony:liana", {
 --Persimmon Kaki
 
 minetest.register_node("ebony:persimmon", {
-	description = S("Persimmon"),
+	description = S("Persimmon fruit"),
 	drawtype = "plantlike",
 	tiles = {"ebony_persimmon.png"},
 	inventory_image = "ebony_persimmon.png",

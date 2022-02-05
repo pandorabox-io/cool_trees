@@ -1,11 +1,23 @@
 # textdomain: pomegranate
+
+
+### init.lua ###
+
+# textdomain: pomegranate
 Pomegranate=Granada
 Pomegranate Section=Gajo de granada
-Pomegranate Tree Inner Stair=Escalera interior de granado
+Pomegranate Tree Fence Gate=
+Pomegranate Tree Fence Rail=
 Pomegranate Tree Leaves=Hojas de granado
-Pomegranate Tree Outer Stair=Escalera exterior de granado
+Pomegranate Tree Sapling=Retoño de granado
 Pomegranate Tree Slab=Losa de granado
 Pomegranate Tree Stair=Escalera de granado
-Pomegranate Tree Sapling=Retoño de granado
 Pomegranate Tree Trunk=Madera de granado
 Pomegranate Tree Wood=Tablas de granado 
+Pomegranate Tree Wood Fence=
+
+
+##### not used anymore #####
+
+Pomegranate Tree Inner Stair=Escalera interior de granado
+Pomegranate Tree Outer Stair=Escalera exterior de granado

@@ -1,9 +1,22 @@
 # textdomain: sequoia
+
+
+### init.lua ###
+
+Sequoia Fence Rail=
+Sequoia Leaves=Hojas de secuoya
+# textdomain: sequoia
 Sequoia Sapling=Retoño de secuoya
+Sequoia Tree Slab=
+Sequoia Tree Stair=
 Sequoia Trunk=Madera de secuoya
 Sequoia Wood=Tablas de secuoya
+Sequoia Wood Fence=
+
+
+##### not used anymore #####
+
 Sequoia Inner Stair=Escalera interior de secuoya
-Sequoia Leaves=Hojas de secuoya
 Sequoia Outer Stair=Escalera exterior de secuoya
 Sequoia Slab=Losa de secuoya
 Sequoia Stair=Escalera de secuoya
