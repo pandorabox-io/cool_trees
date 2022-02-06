@@ -1,7 +1,15 @@
 # textdomain: bamboo
+
+
+### init.lua ###
+
+# textdomain: bamboo
 Bamboo=Bambú
+Bamboo Fence Gate=
+Bamboo Fence Rail=
 Bamboo Leaves=Hojas de bambú
-Bamboo Sprout=Brote de bambú
-Bamboo Wood=Tablas de bambú
-Bamboo Stair=Escaleras de bambú
 Bamboo Slab=Losa de bambú
+Bamboo Sprout=Brote de bambú
+Bamboo Stair=Escaleras de bambú
+Bamboo Wood=Tablas de bambú
+Bamboo Wood Fence=

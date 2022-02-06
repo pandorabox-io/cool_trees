@@ -1,12 +1,24 @@
 # textdomain: chestnuttree
+
+
+### init.lua ###
+
+# textdomain: chestnuttree
 Chestnut=Castaña
 Chestnut Bur=Zurrón de castaña
-Chestnut Tree Inner Stair=Escalera interior de castaño
+Chestnut Tree Fence Gate=
+Chestnut Tree Fence Rail=
 Chestnut Tree Leaves=Hojas de castaño
-Chestnut Tree Outer Stair=Escalera exterior de castaño
+Chestnut Tree Sapling=Retoño de castaño
 Chestnut Tree Slab=Losa de castaño
 Chestnut Tree Stair=Escalera de castaño
-Chestnut Tree Sapling=Retoño de castaño
 Chestnut Tree Trunk=Madera de castaño
 Chestnut Tree Wood=Tablas de castaño
+Chestnut Tree Wood Fence=
 Chestnut Wood Door=Puerta de castaño
+
+
+##### not used anymore #####
+
+Chestnut Tree Inner Stair=Escalera interior de castaño
+Chestnut Tree Outer Stair=Escalera exterior de castaño

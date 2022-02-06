@@ -1,11 +1,23 @@
 # textdomain: oak
+
+
+### init.lua ###
+
+# textdomain: oak
 Acorn=Bellota
-Oak Sapling=Retoño de roble
-Oak Trunk=Madera de roble
-Oak Wood=Tablas de roble
-Oak Inner Stair=Escalera interior de roble
+Oak Fence Gate=
+Oak Fence Rail=
 Oak Leaves=Hojas de roble
-Oak Outer Stair=Escalera exterior de roble
+Oak Sapling=Retoño de roble
 Oak Slab=Losa de roble
 Oak Stair=Escalera de roble
+Oak Trunk=Madera de roble
+Oak Wood=Tablas de roble
 Oak Wood Door=Puerta de roble
+Oak Wood Fence=
+
+
+##### not used anymore #####
+
+Oak Inner Stair=Escalera interior de roble
+Oak Outer Stair=Escalera exterior de roble

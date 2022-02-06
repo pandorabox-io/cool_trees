@@ -1,9 +1,24 @@
 # textdomain: larch
-Larch Sapling=Retoño de alerce
+
+
+### init.lua ###
+
+Larch Leaves=Hojas de alerce
+Larch Moss=
+Larch Tree Fence Gate=
+Larch Tree Fence Rail=
+Larch Tree Sapling=
+Larch Tree Slab=Losa de alerce
+Larch Tree Stair=
+Larch Tree Wood Fence=
 Larch Trunk=Madera de alerce
 Larch Wood=Tablas de alerce
-Larch Leaves=Hojas de alerce
-Larch Tree Outer Stair=Escalera exterior de alerce
-Larch Tree Slab=Losa de alerce
-Larch Stair=Escalera de alerce
 Larch Wood Door=Puerta de alerce
+
+
+##### not used anymore #####
+
+# textdomain: larch
+Larch Sapling=Retoño de alerce
+Larch Tree Outer Stair=Escalera exterior de alerce
+Larch Stair=Escalera de alerce

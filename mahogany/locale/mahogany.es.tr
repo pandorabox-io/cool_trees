@@ -1,12 +1,24 @@
 # textdomain: mahogany
+
+
+### init.lua ###
+
+Mahogany Creeper=Enredadera de caoba
+Mahogany Fence Gate=
+Mahogany Fence Rail=
+Mahogany Flower Creeper=Enredadera florida de caoba
+Mahogany Hanging Creeper=Enredadera colgante de caoba
+Mahogany Leaves=Hojas de caoba
+Mahogany Slab=Losa de caoba
+Mahogany Stair=Escaleras de caoba
+Mahogany Tree Sapling=Retoño de árbol de caoba
+# textdomain: mahogany
 Mahogany Trunk=Madera de caoba
 Mahogany Wood=Tablas de caoba
-Mahogany Leaves=Hojas de caoba
-Mahogany Creeper=Enredadera de caoba
-Mahogany Hanging Creeper=Enredadera colgante de caoba
-Mahogany Flower Creeper=Enredadera florida de caoba
-Mahogany Tree Sapling=Retoño de árbol de caoba
-Mahogany Stair=Escaleras de caoba
+Mahogany Wood Fence=
+
+
+##### not used anymore #####
+
 Inner Mahogany Stair=Escaleras de caoba interior
 Outer Mahogany Stair=Escaleras de caoba exterior
-Mahogany Slab=Losa de caoba

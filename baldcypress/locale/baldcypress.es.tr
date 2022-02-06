@@ -1,12 +1,24 @@
 # textdomain: baldcypress
+
+
+### init.lua ###
+
+Bald Cypress Dry Branches=Ramas secas de ciprés calvo
+Bald Cypress Fence Gate=
+Bald Cypress Fence Rail=
+Bald Cypress Leaves=Hojas de criprés calvo
+Bald Cypress Liana=Liana de ciprés calvo
+Bald Cypress Slab=Losa de criprés calvo
+Bald Cypress Stair=
+Bald Cypress Tree Sapling=Retoño de criprés calvo
+# textdomain: baldcypress
 Bald Cypress Trunk=Madera de criprés calvo
 Bald Cypress Wood=Tablas de criprés calvo
-Bald Cypress Leaves=Hojas de criprés calvo
-Bald Cypress Tree Sapling=Retoño de criprés calvo
+Bald Cypress Wood Fence=
+
+
+##### not used anymore #####
+
 Bald Cypress Tree Stair=Escaleras de criprés calvo
-Bald Cypress Slab=Losa de de criprés calvo
 Inner Bald Cypress Stair=Escaleras de criprés calvo interior
 Outer Bald Cypress Stair=Escaleras de criprés calvo exterior
-Bald Cypress Slab=Losa de criprés calvo
-Bald Cypress Dry Branches=Ramas secas de ciprés calvo
-Bald Cypress Liana=Liana de ciprés calvo
