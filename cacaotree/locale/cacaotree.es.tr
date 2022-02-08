@@ -1,21 +1,17 @@
 # textdomain: cacaotree
 
-
-### init.lua ###
-
 Cacao Beans=Granos de cacao
 Cacao Pod=Vaina de cacao
-Cacao Tree Fence Gate=Puerta de cerca de madera de cacao
-Cacao Tree Fence Rail=Listones de madera de cacao para cerca
+Cacao Tree Fence Gate=Puerta de valla de madera de cacao
+Cacao Tree Fence Rail=Listone de madera de cacao para valla
 Cacao Tree Leaves=Hojas de árbol de cacao
 Cacao Tree Liana=Liana de árbol de cacao
-# textdomain: cacaotree
 Cacao Tree Sapling=Retoño de árbol de cacao
 Cacao Tree Slab=Losa de árbol de cacao
 Cacao Tree Stair=Escalera de árbol de cacao
-Cacao Tree Trunk=Madera de árbol de cacao
+Cacao Tree Trunk=Tronco de árbol de cacao
 Cacao Tree Wood=Tablas de árbol de cacao
-Cacao Tree Wood Fence=Cerca de madera de cacao
+Cacao Tree Wood Fence=Valla de madera de cacao
 Cacaotree Flower Creeper=Enredadera de árbol de cacao
 Choco Cake=Tarta de chocolate
 Cocoa Powder=Cacao en polvo

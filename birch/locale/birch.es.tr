@@ -1,17 +1,13 @@
 # textdomain: birch
 
-
-### init.lua ###
-
-Birch Fence=
-Birch Fence Gate=
-Birch Fence Rail=
+Birch Fence=Valla de abedul
+Birch Fence Gate=Puerta de valla de abedul
+Birch Fence Rail=Barandilla para valla de abedul
 Birch Leaves=Hojas de abedul
-# textdomain: birch
 Birch Sapling=Retoño de abedul
 Birch Tree Slab=Losa de abedul
 Birch Tree Stair=Escaleras de abedul
-Birch Trunk=Madera de abedul
+Birch Trunk=Tronco de abedul
 Birch Wood=Tablas de abedul
 Birch Wood Door=Puerta de abedul
 
@@ -20,4 +16,3 @@ Birch Wood Door=Puerta de abedul
 
 Inner Birch Tree Stair=Escaleras de abedul interior
 Outer Birch Tree Stair=Escaleras de abedul exterior
-Birch Slab=Losa de abedul

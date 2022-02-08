@@ -1,21 +1,17 @@
 # textdomain: palm
 
-
-### init.lua ###
-
 Coconut=Coco
-Coconut Slice=Coco partido
+Coconut Slice=Rebanada de coco
 Coconut Wax Candle=Vela de cera de coco
 Palm Door=Puerta de palmera
 Palm Leaves=Hojas de palmera
-# textdomain: palm
 Palm Sapling=Retoño de palmera
-Palm Tree Fence Gate=
-Palm Tree Fence Rail=
+Palm Tree Fence Gate=Puerta de valla de palmera
+Palm Tree Fence Rail=Barandilla para valla de palmera
 Palm Tree Slab=Losa de palmera
 Palm Tree Stair=Escaleras de palmera
-Palm Tree Wood Fence=
-Palm Trunk=Madera de palmera
+Palm Tree Wood Fence=Valla de palmera
+Palm Trunk=Tronco de palmera
 Palm Wax=Cera de coco
 Palm Wood=Tablas de palmera
 
@@ -24,4 +20,3 @@ Palm Wood=Tablas de palmera
 
 Inner Palm Stair=Escaleras de palmera interior
 Outer Palm Stair=Escaleras de palmera exterior
-Palm Slab=Losa de palmera
