@@ -48,9 +48,9 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
-	name = "pomegranate:pomegranate_tree",
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
+		name = "pomegranate:pomegranate_tree",
 		deco_type = "schematic",
 		place_on = {"default:dry_dirt"},
 		sidelen = 16,
@@ -62,13 +62,22 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"savanna"},
 		y_min = 1,
-		y_max = 80,
 		schematic = modpath.."/schematics/pomegranate.mts",
-		flags = "place_center_x, place_center_z,  force_placement",
-		rotation = "random",
-	})
+		flags = "place_center_x, place_center_z, force_placement",
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"savanna"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -112,7 +121,7 @@ minetest.register_node("pomegranate:sapling", {
 })
 
 minetest.register_node("pomegranate:trunk", {
-	description = S("Pomegranate Tree Trunk"),
+	description = S("Pomegranate Trunk"),
 	tiles = {
 		"pomegranate_trunk_top.png",
 		"pomegranate_trunk_top.png",
@@ -126,7 +135,7 @@ minetest.register_node("pomegranate:trunk", {
 
 -- pomegranate wood
 minetest.register_node("pomegranate:wood", {
-	description = S("Pomegranate Tree Wood"),
+	description = S("Pomegranate Wood Planks"),
 	tiles = {"pomegranate_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
@@ -135,7 +144,7 @@ minetest.register_node("pomegranate:wood", {
 
 -- pomegranate tree leaves
 minetest.register_node("pomegranate:leaves", {
-	description = S("Pomegranate Tree Leaves"),
+	description = S("Pomegranate Leaves"),
 	drawtype = "allfaces_optional",
 	tiles = {"pomegranate_leaves.png"},
 	paramtype = "light",
@@ -192,53 +201,61 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"pomegranate:trunk"},
-	leaves = {"pomegranate:leaves"},
+	leaves = {"pomegranate:leaves", "pomegranate:pomegranate"},
 	radius = 3,
 })
 
 -- Fence
 if minetest.settings:get_bool("cool_fences", true) then
 	local fence = {
-		description = S("Pomegranate Tree Wood Fence"),
+		description = S("Pomegranate Wood Fence"),
 		texture =  "pomegranate_wood.png",
 		material = "pomegranate:wood",
 		groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		sounds = default.node_sound_wood_defaults(),
 	}
 	default.register_fence("pomegranate:fence", table.copy(fence))
-	fence.description = S("Pomegranate Tree Fence Rail")
+	fence.description = S("Pomegranate Fence Rail")
 	default.register_fence_rail("pomegranate:fence_rail", table.copy(fence))
 
 	if minetest.get_modpath("doors") ~= nil then
-		fence.description = S("Pomegranate Tree Fence Gate")
+		fence.description = S("Pomegranate Fence Gate")
 		doors.register_fencegate("pomegranate:gate", table.copy(fence))
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("pomegranate", "wood", "pomegranate:wood", {
+		description = S("Pomegranate Wood"),
+		tiles = {"pomegranate_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_pomegranate_wood", "pomegranate:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_pomegranate_wood", "pomegranate:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_pomegranate_wood", "pomegranate:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_pomegranate_wood", "pomegranate:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_pomegranate_trunk", "pomegranate:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_pomegranate_trunk", "pomegranate:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_pomegranate_trunk", "pomegranate:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_pomegranate_trunk", "pomegranate:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"pomegranate_trunk",
-		"pomegranate:trunk",
+		"pomegranate_wood",
+		"pomegranate:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"pomegranate_wood.png"},
-		S("Pomegranate Tree Stair"),
-		S("Pomegranate Tree Slab"),
+		S("Pomegranate Wood Stair"),
+		S("Pomegranate Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("pomegranate", "wood", "pomegranate:wood", {
-		description = "Pomegranate Tree",
-		tiles = {"pomegranate_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"pomegranate:sapling", grow_new_pomegranate_tree, "soil"},

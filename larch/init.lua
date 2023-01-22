@@ -24,8 +24,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "larch:larch_tree",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_coniferous_litter"},
@@ -38,14 +38,23 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"coniferous_forest"},
 		y_min = 1,
-		y_max = 32,
 		place_offset_y = 1,
 		schematic = modpath.."/schematics/larch.mts",
 		flags = "place_center_x, place_center_z, force_placement",
-		rotation = "random",
-	})
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 32
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"coniferous_forest"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -104,7 +113,7 @@ minetest.register_node("larch:trunk", {
 
 -- larch wood
 minetest.register_node("larch:wood", {
-	description = S("Larch Wood"),
+	description = S("Larch Wood Planks"),
 	tiles = {"larch_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -148,7 +157,7 @@ minetest.register_node("larch:moss", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1,
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1,
 		falling_node = 1
 	},
 	sounds = default.node_sound_leaves_defaults(),
@@ -167,7 +176,6 @@ minetest.register_craft({
 	recipe = {{"larch:trunk"}}
 })
 
-
 minetest.register_craft({
 	type = "fuel",
 	recipe = "larch:trunk",
@@ -183,74 +191,80 @@ minetest.register_craft({
 default.register_leafdecay({
 	trunks = {"larch:trunk"},
 	leaves = {"larch:leaves"},
-	radius = 3,
+	radius = 4,
 })
 
 -- Fence
 if minetest.settings:get_bool("cool_fences", true) then
 	local fence = {
-		description = S("Larch Tree Wood Fence"),
+		description = S("Larch Wood Fence"),
 		texture =  "larch_wood.png",
 		material = "larch:wood",
 		groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		sounds = default.node_sound_wood_defaults(),
 	}
 	default.register_fence("larch:fence", table.copy(fence))
-	fence.description = S("Larch Tree Fence Rail")
+	fence.description = S("Larch Fence Rail")
 	default.register_fence_rail("larch:fence_rail", table.copy(fence))
 
 	if minetest.get_modpath("doors") ~= nil then
-		fence.description = S("Larch Tree Fence Gate")
+		fence.description = S("Larch Fence Gate")
 		doors.register_fencegate("larch:gate", table.copy(fence))
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("larch", "wood", "larch:wood", {
+		description = S("Larch Wood"),
+		tiles = {"larch_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_larch_wood", "larch:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_larch_wood", "larch:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_larch_wood", "larch:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_larch_wood", "larch:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_larch_trunk", "larch:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_larch_trunk", "larch:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_larch_trunk", "larch:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_larch_trunk", "larch:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"larch_trunk",
-		"larch:trunk",
+		"larch_wood",
+		"larch:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"larch_wood.png"},
-		S("Larch Tree Stair"),
-		S("Larch Tree Slab"),
+		S("Larch Wood Stair"),
+		S("Larch Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("larch", "wood", "larch:wood", {
-		description = "larch Tree",
-		tiles = {"larch_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"larch:sapling", grow_new_larch_tree, "soil"},
 	})
 end
 
---Door
-
+-- Door
 if minetest.get_modpath("doors") ~= nil then
 	doors.register("door_larch_wood", {
-			tiles = {{ name = "larch_door_wood.png", backface_culling = true }},
-			description = S("Larch Wood Door"),
-			inventory_image = "larch_item_wood.png",
-			groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
-			recipe = {
-				{"larch:wood", "larch:wood"},
-				{"larch:wood", "larch:wood"},
-				{"larch:wood", "larch:wood"},
-			}
+		tiles = {{ name = "larch_door_wood.png", backface_culling = true }},
+		description = S("Larch Wood Door"),
+		inventory_image = "larch_item_wood.png",
+		groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
+		recipe = {
+			{"larch:wood", "larch:wood"},
+			{"larch:wood", "larch:wood"},
+			{"larch:wood", "larch:wood"},
+		}
 	})
 end
-
 
 -- Support for flowerpot
 if minetest.global_exists("flowerpot") then

@@ -25,9 +25,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-
-	local name, place_on, biomes, offset, scale, schematic, place_offset_y, seed
+if mg_name ~= "singlenode" then
+	local place_on, biomes
 
 	if minetest.get_modpath("redw") then
 		place_on = {"redw:dirt", "redw:dirt_with_grass"}
@@ -37,50 +36,64 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 		biomes = "grassland"
 	end
 
-	for i = 1, 3 do
-		if i == 1 then
-			name = "sequoia:sequoia_small"
-			schematic = "sequoia_01"
-			offset = 0.008
-			scale = 0.0004
-			seed = 67
-			place_offset_y = -1
-		elseif i == 2 then
-			name = "sequoia:sequoia_medium"
-			schematic = "sequoia_02"
-			offset = 0.008
-			scale = 0.0004
-			seed = 345
-			place_offset_y = -1
-		else
-			name = "sequoia:sequoia_giant"
-			schematic = "sequoia_03"
-			offset = 0.0008
-			scale = 0.00004
-			seed = 23
-			place_offset_y = -2
-		end
-		minetest.register_decoration({
-			name = name,
-			deco_type = "schematic",
-			place_on = place_on,
-			sidelen = 16,
-			noise_params = {
-				offset = offset,
-				scale = scale,
-				spread = {x = 250, y = 250, z = 250},
-				seed = seed,
-				octaves = 3,
-				persist = 0.66
-			},
-			biomes = {biomes},
-			y_min = 1,
-			y_max = 80,
-			schematic = modpath .. "/schematics/" .. schematic .. ".mts",
-			flags = "place_center_x, place_center_z, force_placement",
-			rotation = "random",
-			place_offset_y = place_offset_y,
-		})
+	local decoration_definition = {
+		deco_type = "schematic",
+		place_on = place_on,
+		sidelen = 16,
+		noise_params = {
+			spread = {x = 250, y = 250, z = 250},
+			octaves = 3,
+			persist = 0.66
+		},
+		y_min = 1,
+		flags = "place_center_x, place_center_z, force_placement",
+		rotation = "random"
+	}
+
+	local function register_decorations(definition)
+		-- sequoia small
+		local sequoia_small = table.copy(definition)
+		sequoia_small.name = "sequoia:sequoia_small"
+		sequoia_small.noise_params.offset = 0.008
+		sequoia_small.noise_params.scale = 0.0004
+		sequoia_small.noise_params.seed = 67
+		sequoia_small.schematic = modpath .. "/schematics/sequoia_01.mts"
+		sequoia_small.place_offset_y = -1
+
+		minetest.register_decoration(sequoia_small)
+
+		-- sequoia medium
+		local sequoia_medium = table.copy(definition)
+		sequoia_medium.name = "sequoia:sequoia_medium"
+		sequoia_medium.noise_params.offset = 0.008
+		sequoia_medium.noise_params.scale = 0.0004
+		sequoia_medium.noise_params.seed = 345
+		sequoia_medium.schematic = modpath .. "/schematics/sequoia_02.mts"
+		sequoia_medium.place_offset_y = -1
+
+		minetest.register_decoration(sequoia_medium)
+
+		-- sequoia giant
+		local sequoia_giant = table.copy(definition)
+		sequoia_giant.name = "sequoia:sequoia_giant"
+		sequoia_giant.noise_params.offset = 0.0008
+		sequoia_giant.noise_params.scale = 0.00004
+		sequoia_giant.noise_params.seed = 23
+		sequoia_giant.schematic = modpath .. "/schematics/sequoia_03.mts"
+		sequoia_giant.place_offset_y = -2
+
+		minetest.register_decoration(sequoia_giant)
+	end
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		register_decorations(decoration_definition)
+	else
+		decoration_definition.biomes = {biomes}
+		decoration_definition.y_max = 5000
+
+		register_decorations(decoration_definition)
 	end
 end
 
@@ -89,7 +102,7 @@ end
 --
 
 minetest.register_node("sequoia:sapling", {
-	description = S("Sequoia Sapling"),
+	description = S("Sequoia Tree Sapling"),
 	drawtype = "plantlike",
 	tiles = {"sequoia_sapling.png"},
 	inventory_image = "sequoia_sapling.png",
@@ -139,7 +152,7 @@ minetest.register_node("sequoia:trunk", {
 
 -- Sequoia wood
 minetest.register_node("sequoia:wood", {
-	description = S("Sequoia Wood"),
+	description = S("Sequoia Wood Planks"),
 	tiles = {"sequoia_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
@@ -212,32 +225,45 @@ if minetest.settings:get_bool("cool_fences", true) then
 
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("sequoia", "wood", "sequoia:wood", {
+		description = S("Sequoia Wood"),
+		tiles = {"sequoia_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_sequoia_wood", "sequoia:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_sequoia_wood", "sequoia:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_sequoia_wood", "sequoia:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_sequoia_wood", "sequoia:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_sequoia_trunk", "sequoia:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_sequoia_trunk", "sequoia:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_sequoia_trunk", "sequoia:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_sequoia_trunk", "sequoia:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"sequoia_trunk",
-		"sequoia:trunk",
+		"sequoia_wood",
+		"sequoia:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"sequoia_wood.png"},
-		S("Sequoia Tree Stair"),
-		S("Sequoia Tree Slab"),
+		S("Sequoia Wood Stair"),
+		S("Sequoia Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("sequoia", "wood", "sequoia:wood", {
-		description = "Sequoia",
-		tiles = {"sequoia_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"sequoia:sapling", grow_new_sequoia, "soil"},
 	})
+end
+
+-- Support for flowerpot
+if minetest.global_exists("flowerpot") then
+	flowerpot.register_node("sequoia:sapling")
 end

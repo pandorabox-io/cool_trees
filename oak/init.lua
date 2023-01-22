@@ -50,7 +50,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
+if mg_name ~= "singlenode" then
+	local place_on, biomes, offset, scale
 
 	if minetest.get_modpath("rainf") then
 		place_on = "rainf:meadow"
@@ -64,7 +65,7 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 		scale = 0.00004
 	end
 
-	minetest.register_decoration({
+	local decoration_definition = {
 		name = "oak:oak_tree",
 		deco_type = "schematic",
 		place_on = {place_on},
@@ -77,14 +78,23 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {biomes},
 		y_min = 1,
-		y_max = 80,
 		schematic = modpath.."/schematics/oak.mts",
-		flags = "place_center_x, place_center_z,  force_placement",
+		flags = "place_center_x, place_center_z, force_placement",
 		rotation = "random",
-		place_offset_y = 0,
-	})
+		place_offset_y = 0
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {biomes}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -92,7 +102,7 @@ end
 --
 
 minetest.register_node("oak:sapling", {
-	description = S("Oak Sapling"),
+	description = S("Oak Tree Sapling"),
 	drawtype = "plantlike",
 	tiles = {"oak_sapling.png"},
 	inventory_image = "oak_sapling.png",
@@ -142,7 +152,7 @@ minetest.register_node("oak:trunk", {
 
 -- oak wood
 minetest.register_node("oak:wood", {
-	description = S("Oak Wood"),
+	description = S("Oak Wood Planks"),
 	tiles = {"oak_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
@@ -196,7 +206,7 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"oak:trunk"},
-	leaves = {"oak:leaves"},
+	leaves = {"oak:leaves", "oak:acorn"},
 	radius = 3,
 })
 
@@ -219,47 +229,56 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("oak", "wood", "oak:wood", {
+		description = S("Oak Wood"),
+		tiles = {"oak_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_oak_wood", "oak:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_oak_wood", "oak:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_oak_wood", "oak:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_oak_wood", "oak:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_oak_trunk", "oak:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_oak_trunk", "oak:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_oak_trunk", "oak:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_oak_trunk", "oak:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"oak_trunk",
-		"oak:trunk",
+		"oak_wood",
+		"oak:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"oak_wood.png"},
-		S("Oak Stair"),
-		S("Oak Slab"),
+		S("Oak Wood Stair"),
+		S("Oak Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("oak", "wood", "oak:wood", {
-		description = "Oak",
-		tiles = {"oak_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"oak:sapling", grow_new_oak_tree, "soil"},
 	})
 end
 
+-- Door
 if minetest.get_modpath("doors") ~= nil then
 	doors.register("door_oak_wood", {
-			tiles = {{ name = "oak_door_wood.png", backface_culling = true }},
-			description = S("Oak Wood Door"),
-			inventory_image = "oak_item_wood.png",
-			groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
-			recipe = {
-				{"oak:wood", "oak:wood"},
-				{"oak:wood", "oak:wood"},
-				{"oak:wood", "oak:wood"},
-			}
+		tiles = {{ name = "oak_door_wood.png", backface_culling = true }},
+		description = S("Oak Wood Door"),
+		inventory_image = "oak_item_wood.png",
+		groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
+		recipe = {
+			{"oak:wood", "oak:wood"},
+			{"oak:wood", "oak:wood"},
+			{"oak:wood", "oak:wood"},
+		}
 	})
 end
 

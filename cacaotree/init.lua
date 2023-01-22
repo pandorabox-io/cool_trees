@@ -46,15 +46,15 @@ minetest.register_node("cacaotree:pod", {
 --Cacao Beans
 
 minetest.register_craftitem("cacaotree:cacao_beans", {
-    description = S("Cacao Beans"),
-    inventory_image = "cacaotree_cacao_beans.png"
+	description = S("Cacao Beans"),
+	inventory_image = "cacaotree_cacao_beans.png"
 })
 
 --Cocoa Powder
 
 minetest.register_craftitem("cacaotree:cocoa_powder", {
-    description = S("Cocoa Powder"),
-    inventory_image = "cacaotree_cocoa_powder.png"
+	description = S("Cocoa Powder"),
+	inventory_image = "cacaotree_cocoa_powder.png"
 })
 
 minetest.register_craft({
@@ -67,10 +67,10 @@ minetest.register_craft({
 --Chocolate
 
 minetest.register_craftitem("cacaotree:milk_chocolate", {
-    description = S("Milk Chocolate"),
-    inventory_image = "cacaotree_milk_choco.png",
-    on_use = minetest.item_eat(4),
-    groups = {flammable = 2, food = 2, food_chocolate = 1},
+	description = S("Milk Chocolate"),
+	inventory_image = "cacaotree_milk_choco.png",
+	on_use = minetest.item_eat(4),
+	groups = {flammable = 2, food = 2, food_chocolate = 1},
 })
 
 minetest.register_craft({
@@ -83,10 +83,10 @@ minetest.register_craft({
 --Chocolate Cake
 
 minetest.register_craftitem("cacaotree:choco_cake", {
-    description = S("Choco Cake"),
-    inventory_image = "cacaotree_choco_cake.png",
-    on_use = minetest.item_eat(7),
-    groups = {flammable = 2, food = 2, food_chocolate = 1},
+	description = S("Chcocolate Cake"),
+	inventory_image = "cacaotree_choco_cake.png",
+	on_use = minetest.item_eat(7),
+	groups = {flammable = 2, food = 2, food_chocolate = 1},
 })
 
 minetest.register_craft({
@@ -111,10 +111,9 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-
-	minetest.register_decoration({
-		name = "cacao:cacaotree",
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
+		name = "cacaotree:cacaotree",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_rainforest_litter"},
 		sidelen = 16,
@@ -126,14 +125,21 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"rainforest"},
 		y_min = 1,
 		y_max = 31000,
 		schematic = modpath.."/schematics/cacaotree.mts",
 		flags = "place_center_x, place_center_z, force_placement",
 		rotation = "random",
-		place_offset_y = 1,
-	})
+		place_offset_y = 1
+	}
+
+	if mg_name == "v6" then
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"rainforest"}
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -191,7 +197,7 @@ minetest.register_node("cacaotree:trunk", {
 
 -- cacao wood
 minetest.register_node("cacaotree:wood", {
-	description = S("Cacao Tree Wood"),
+	description = S("Cacao Tree Wood Planks"),
 	tiles = {"cacaotree_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
@@ -235,13 +241,13 @@ minetest.register_node("cacaotree:liana", {
 		fixed = {-0.5, -0.5, 0.0, 0.5, 0.5, 0.0}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1,
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1,
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
 
 minetest.register_node("cacaotree:flower_creeper", {
-	description = S("Cacaotree Flower Creeper"),
+	description = S("Cacao Tree Flower Creeper"),
 	drawtype = "nodebox",
 	walkable = true,
 	paramtype = "light",
@@ -255,7 +261,7 @@ minetest.register_node("cacaotree:flower_creeper", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -287,7 +293,7 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"cacaotree:trunk"},
-	leaves = {"cacaotree:leaves"},
+	leaves = {"cacaotree:leaves", "cacaotree:pod"},
 	radius = 3,
 })
 
@@ -310,32 +316,38 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("cacaotree", "wood", "cacaotree:wood", {
+		description = S("Cacao Tree Wood"),
+		tiles = {"cacaotree_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_cacaotree_wood", "cacaotree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_cacaotree_wood", "cacaotree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_cacaotree_wood", "cacaotree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_cacaotree_wood", "cacaotree:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_cacaotree_trunk", "cacaotree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_cacaotree_trunk", "cacaotree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_cacaotree_trunk", "cacaotree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_cacaotree_trunk", "cacaotree:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"cacaotree_trunk",
-		"cacaotree:trunk",
+		"cacaotree_wood",
+		"cacaotree:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"cacaotree_wood.png"},
-		S("Cacao Tree Stair"),
-		S("Cacao Tree Slab"),
+		S("Cacao Tree Wood Stair"),
+		S("Cacao Tree Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("cacaotree", "wood", "cacaotree:wood", {
-		description = "Cacao Tree",
-		tiles = {"cacaotree_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
--- Bonemeal
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"cacaotree:sapling", grow_new_cacao_tree, "soil"},

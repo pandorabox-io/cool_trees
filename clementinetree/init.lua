@@ -48,8 +48,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "clementinetree:clementine_tree",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_grass"},
@@ -62,13 +62,22 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"deciduous_forest"},
 		y_min = 1,
-		y_max = 80,
 		schematic = modpath.."/schematics/clementinetree.mts",
-		flags = "place_center_x, place_center_z,  force_placement",
-		rotation = "random",
-	})
+		flags = "place_center_x, place_center_z, force_placement",
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"deciduous_forest"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -126,7 +135,7 @@ minetest.register_node("clementinetree:trunk", {
 
 -- clementinetree wood
 minetest.register_node("clementinetree:wood", {
-	description = S("Clementine Tree Wood"),
+	description = S("Clementine Tree Wood Planks"),
 	tiles = {"clementinetree_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
@@ -180,7 +189,7 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"clementinetree:trunk"},
-	leaves = {"clementinetree:leaves"},
+	leaves = {"clementinetree:leaves", "clementinetree:clementine"},
 	radius = 3,
 })
 
@@ -203,50 +212,56 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("clementinetree", "wood", "clementinetree:wood", {
+		description = S("Clementine Tree Wood"),
+		tiles = {"clementinetree_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_clementinetree_wood", "clementinetree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_clementinetree_wood", "clementinetree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_clementinetree_wood", "clementinetree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_clementinetree_wood", "clementinetree:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_clementinetree_trunk", "clementinetree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_clementinetree_trunk", "clementinetree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_clementinetree_trunk", "clementinetree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_clementinetree_trunk", "clementinetree:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"clementinetree_trunk",
-		"clementinetree:trunk",
+		"clementinetree_wood",
+		"clementinetree:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"clementinetree_wood.png"},
-		S("Clementine Tree Stair"),
-		S("Clementine Tree Slab"),
+		S("Clementine Tree Wood Stair"),
+		S("Clementine Tree Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("clementinetree", "wood", "clementinetree:wood", {
-		description = "Clementine Tree",
-		tiles = {"clementinetree_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"clementinetree:sapling", grow_new_clementinetree_tree, "soil"},
 	})
 end
 
-
---Door
-
+-- Door
 if minetest.get_modpath("doors") ~= nil then
 	doors.register("door_clementinetree_wood", {
-			tiles = {{ name = "clementinetree_door_wood.png", backface_culling = true }},
-			description = S("Clementine Wood Door"),
-			inventory_image = "clementinetree_item_wood.png",
-			groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
-			recipe = {
-				{"clementinetree:wood", "clementinetree:wood"},
-				{"clementinetree:wood", "clementinetree:wood"},
-				{"clementinetree:wood", "clementinetree:wood"},
-			}
+		tiles = {{ name = "clementinetree_door_wood.png", backface_culling = true }},
+		description = S("Clementine Tree Wood Door"),
+		inventory_image = "clementinetree_item_wood.png",
+		groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
+		recipe = {
+			{"clementinetree:wood", "clementinetree:wood"},
+			{"clementinetree:wood", "clementinetree:wood"},
+			{"clementinetree:wood", "clementinetree:wood"},
+		}
 	})
 end
 

@@ -25,8 +25,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "pineapple:pineapple_shrub",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_rainforest_litter"},
@@ -39,14 +39,23 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"rainforest"},
 		y_min = 1,
-		y_max = 80,
 		schematic = modpath.."/schematics/pineapple.mts",
-		flags = "place_center_x, place_center_z,  force_placement",
+		flags = "place_center_x, place_center_z, force_placement",
 		rotation = "random",
-		place_offset_y = 1,
-	})
+		place_offset_y = 1
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"rainforest"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -59,12 +68,12 @@ minetest.register_node("pineapple:pineapple", {
 	drawtype = "plantlike_rooted",
 	tiles = {"pineapple_pineapple.png"},
 	special_tiles = {
-	nil,
-	nil,
-	"pineapple_pineapple_leaves.png",
-	"pineapple_pineapple_leaves.png",
-	"pineapple_pineapple_leaves.png",
-	"pineapple_pineapple_leaves.png"
+		nil,
+		nil,
+		"pineapple_pineapple_leaves.png",
+		"pineapple_pineapple_leaves.png",
+		"pineapple_pineapple_leaves.png",
+		"pineapple_pineapple_leaves.png"
 	},
 	inventory_image = "pineapple_pineapple_inv.png",
 	wield_image = "pineapple_pineapple_inv.png",

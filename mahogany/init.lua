@@ -25,8 +25,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "mahogany:mahogany_tree",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_rainforest_litter"},
@@ -39,14 +39,23 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"rainforest"},
 		height = 2,
 		y_min = 1,
-		y_max = 62,
 		schematic = modpath.."/schematics/mahogany.mts",
 		flags = "place_center_x, place_center_z, force_placement",
-		rotation = "random",
-	})
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 62
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"rainforest"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -106,7 +115,7 @@ minetest.register_node("mahogany:trunk", {
 
 -- mahogany wood
 minetest.register_node("mahogany:wood", {
-	description = S("Mahogany Wood"),
+	description = S("Mahogany Wood Planks"),
 	tiles = {"mahogany_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -154,7 +163,7 @@ minetest.register_node("mahogany:creeper", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -174,7 +183,7 @@ minetest.register_node("mahogany:flower_creeper", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1, falling_node = 1
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, falling_node = 1
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -194,7 +203,7 @@ minetest.register_node("mahogany:hanging_creeper", {
 		fixed = {-0.5, -0.5, 0.0, 0.5, 0.5, 0.0}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1, falling_node = 1
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1, falling_node = 1
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -249,32 +258,38 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("mahogany", "wood", "mahogany:wood", {
+		description = S("Mahogany Wood"),
+		tiles = {"mahogany_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_mahogany_wood", "mahogany:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_mahogany_wood", "mahogany:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_mahogany_wood", "mahogany:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_mahogany_wood", "mahogany:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_mahogany_trunk", "mahogany:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_mahogany_trunk", "mahogany:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_mahogany_trunk", "mahogany:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_mahogany_trunk", "mahogany:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"mahogany_trunk",
-		"mahogany:trunk",
+		"mahogany_wood",
+		"mahogany:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"mahogany_wood.png"},
-		S("Mahogany Stair"),
-		S("Mahogany Slab"),
+		S("Mahogany Wood Stair"),
+		S("Mahogany Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("mahogany", "wood", "mahogany:wood", {
-		description = "Mahogany",
-		tiles = {"mahogany_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
---Support for bonemeal
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"mahogany:sapling", grow_new_mahogany_tree, "soil"},
