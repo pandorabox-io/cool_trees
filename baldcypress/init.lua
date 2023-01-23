@@ -24,8 +24,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "baldcypress:baldcypress_tree",
 		deco_type = "schematic",
 		place_on = {"default:sand"},
@@ -38,14 +38,21 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"coniferous_forest_ocean"},
 		height = 2,
 		y_min = 0,
 		y_max = 0,
 		schematic = modpath.."/schematics/baldcypress.mts",
 		flags = "place_center_x, place_center_z, force_placement",
-		rotation = "random",
-	})
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"coniferous_forest_ocean"}
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -104,7 +111,7 @@ minetest.register_node("baldcypress:trunk", {
 
 -- baldcypress wood
 minetest.register_node("baldcypress:wood", {
-	description = S("Bald Cypress Wood"),
+	description = S("Bald Cypress Wood Planks"),
 	tiles = {"baldcypress_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -148,7 +155,7 @@ minetest.register_node("baldcypress:dry_branches", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -169,7 +176,7 @@ minetest.register_node("baldcypress:liana", {
 		fixed = {-0.25, -0.5, 0.0, 0.25, 0.5, 0.0}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1,
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1,
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -186,7 +193,6 @@ minetest.register_craft({
 	output = "baldcypress:wood 4",
 	recipe = {{"baldcypress:trunk"}}
 })
-
 
 minetest.register_craft({
 	type = "fuel",
@@ -225,32 +231,38 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("baldcypress", "wood", "baldcypress:wood", {
+		description = S("Bald Cypress Wood"),
+		tiles = {"baldcypress_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_baldcypress_wood", "baldcypress:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_baldcypress_wood", "baldcypress:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_baldcypress_wood", "baldcypress:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_baldcypress_wood", "baldcypress:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_baldcypress_trunk", "baldcypress:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_baldcypress_trunk", "baldcypress:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_baldcypress_trunk", "baldcypress:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_baldcypress_trunk", "baldcypress:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"baldcypress_trunk",
-		"baldcypress:trunk",
+		"baldcypress_wood",
+		"baldcypress:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"baldcypress_wood.png"},
-		S("Bald Cypress Stair"),
-		S("Bald Cypress Slab"),
+		S("Bald Cypress Wood Stair"),
+		S("Bald Cypress Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("baldcypress", "wood", "baldcypress:wood", {
-		description = "Bald Cypress",
-		tiles = {"baldcypress_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
---Support for bonemeal
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"baldcypress:sapling", grow_new_baldcypress_tree, "soil"},

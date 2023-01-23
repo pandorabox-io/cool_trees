@@ -66,12 +66,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-
-	local place_on
-	local biomes
-	local offset
-	local scale
+if mg_name ~= "singlenode" then
+	local place_on, biomes, offset, scale
 
 	if minetest.get_modpath("rainf") then
 		place_on = "rainf:meadow"
@@ -85,7 +81,7 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 		scale = 0.00004
 	end
 
-	minetest.register_decoration({
+	local decoration_definition = {
 		name = "chestnuttree:chestnut_tree",
 		deco_type = "schematic",
 		place_on = {place_on},
@@ -98,14 +94,23 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {biomes},
 		y_min = 1,
-		y_max = 80,
 		schematic = modpath.."/schematics/chestnuttree.mts",
-		flags = "place_center_x, place_center_z,  force_placement",
+		flags = "place_center_x, place_center_z, force_placement",
 		rotation = "random",
-		place_offset_y = 1,
-	})
+		place_offset_y = 1
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {biomes}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -163,7 +168,7 @@ minetest.register_node("chestnuttree:trunk", {
 
 -- chestnuttree wood
 minetest.register_node("chestnuttree:wood", {
-	description = S("Chestnut Tree Wood"),
+	description = S("Chestnut Tree Wood Planks"),
 	tiles = {"chestnuttree_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
@@ -217,8 +222,8 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"chestnuttree:trunk"},
-	leaves = {"chestnuttree:leaves"},
-	radius = 3,
+	leaves = {"chestnuttree:leaves", "chestnuttree:bur"},
+	radius = 4,
 })
 
 -- Fence
@@ -240,49 +245,56 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("chestnuttree", "wood", "chestnuttree:wood", {
+		description = S("Chestnut Tree Wood"),
+		tiles = {"chestnuttree_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_chestnuttree_wood", "chestnuttree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_chestnuttree_wood", "chestnuttree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_chestnuttree_wood", "chestnuttree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_chestnuttree_wood", "chestnuttree:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_chestnuttree_trunk", "chestnuttree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_chestnuttree_trunk", "chestnuttree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_chestnuttree_trunk", "chestnuttree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_chestnuttree_trunk", "chestnuttree:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"chestnuttree_trunk",
-		"chestnuttree:trunk",
+		"chestnuttree_wood",
+		"chestnuttree:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"chestnuttree_wood.png"},
-		S("Chestnut Tree Stair"),
-		S("Chestnut Tree Slab"),
+		S("Chestnut Tree Wood Stair"),
+		S("Chestnut Tree Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("chestnuttree", "wood", "chestnuttree:wood", {
-		description = "Chestnut Tree",
-		tiles = {"chestnuttree_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"chestnuttree:sapling", grow_new_chestnuttree_tree, "soil"},
 	})
 end
 
---Door
-
+-- Door
 if minetest.get_modpath("doors") ~= nil then
 	doors.register("door_chestnut_wood", {
-			tiles = {{ name = "chesnuttree_door_wood.png", backface_culling = true }},
-			description = S("Chestnut Wood Door"),
-			inventory_image = "chestnuttree_item_wood.png",
-			groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
-			recipe = {
-				{"chestnuttree:wood", "chestnuttree:wood"},
-				{"chestnuttree:wood", "chestnuttree:wood"},
-				{"chestnuttree:wood", "chestnuttree:wood"},
-			}
+		tiles = {{ name = "chesnuttree_door_wood.png", backface_culling = true }},
+		description = S("Chestnut Tree Wood Door"),
+		inventory_image = "chestnuttree_item_wood.png",
+		groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
+		recipe = {
+			{"chestnuttree:wood", "chestnuttree:wood"},
+			{"chestnuttree:wood", "chestnuttree:wood"},
+			{"chestnuttree:wood", "chestnuttree:wood"},
+		}
 	})
 end
 

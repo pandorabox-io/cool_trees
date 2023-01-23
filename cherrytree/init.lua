@@ -68,8 +68,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "cherrytree:cherry_tree",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_grass"},
@@ -82,13 +82,22 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"deciduous_forest"},
 		y_min = 1,
-		y_max = 32,
 		schematic = modpath.."/schematics/cherrytree.mts",
 		flags = "place_center_x, place_center_z, force_placement",
-		rotation = "random",
-	})
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 32
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"deciduous_forest"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -96,7 +105,7 @@ end
 --
 
 minetest.register_node("cherrytree:sapling", {
-	description = S("Cherrytree Tree Sapling"),
+	description = S("Cherry Tree Sapling"),
 	drawtype = "plantlike",
 	tiles = {"cherrytree_sapling.png"},
 	inventory_image = "cherrytree_sapling.png",
@@ -132,7 +141,7 @@ minetest.register_node("cherrytree:sapling", {
 })
 
 minetest.register_node("cherrytree:trunk", {
-	description = S("Cherrytree Trunk"),
+	description = S("Cherry Tree Trunk"),
 	tiles = {
 		"cherrytree_trunk_top.png",
 		"cherrytree_trunk_top.png",
@@ -147,7 +156,7 @@ minetest.register_node("cherrytree:trunk", {
 
 -- cherrytree wood
 minetest.register_node("cherrytree:wood", {
-	description = S("Cherrytree Wood"),
+	description = S("Cherry Tree Wood Planks"),
 	tiles = {"cherrytree_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -158,7 +167,7 @@ minetest.register_node("cherrytree:wood", {
 
 -- cherrytree tree leaves
 minetest.register_node("cherrytree:blossom_leaves", {
-	description = S("Cherrytree Blossom Leaves"),
+	description = S("Cherry Tree Blossom Leaves"),
 	drawtype = "allfaces_optional",
 	tiles = {"cherrytree_blossom_leaves.png"},
 	paramtype = "light",
@@ -184,27 +193,7 @@ minetest.register_node("cherrytree:blossom_leaves", {
 		else
 			return true
 		end
-    end
-})
-
--- cherrytree tree leaves
-minetest.register_node("cherrytree:leaves", {
-	description = S("Cherrytree Leaves"),
-	drawtype = "allfaces_optional",
-	tiles = {"cherrytree_leaves.png"},
-	paramtype = "light",
-	walkable = true,
-	waving = 1,
-	groups = {snappy = 3, leafdecay = 3, leaves = 1, flammable = 2},
-	drop = {
-		max_items = 1,
-		items = {
-			{items = {"cherrytree:sapling"}, rarity = 20},
-			{items = {"cherrytree:leaves"}}
-		}
-	},
-	sounds = default.node_sound_leaves_defaults(),
-	after_place_node = default.after_place_leaves,
+	end
 })
 
 --
@@ -220,7 +209,6 @@ minetest.register_craft({
 	recipe = {{"cherrytree:trunk"}}
 })
 
-
 minetest.register_craft({
 	type = "fuel",
 	recipe = "cherrytree:trunk",
@@ -235,13 +223,7 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"cherrytree:trunk"},
-	leaves = {"cherrytree:leaves"},
-	radius = 3,
-})
-
-default.register_leafdecay({
-	trunks = {"cherrytree:trunk"},
-	leaves = {"cherrytree:blossom_leaves"},
+	leaves = {"cherrytree:blossom_leaves", "cherrytree:cherries"},
 	radius = 3,
 })
 
@@ -264,32 +246,38 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("cherrytree", "wood", "cherrytree:wood", {
+		description = S("Cherry Tree Wood"),
+		tiles = {"cherrytree_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_cherrytree_wood", "cherrytree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_cherrytree_wood", "cherrytree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_cherrytree_wood", "cherrytree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_cherrytree_wood", "cherrytree:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_cherrytree_trunk", "cherrytree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_cherrytree_trunk", "cherrytree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_cherrytree_trunk", "cherrytree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_cherrytree_trunk", "cherrytree:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"cherrytree_trunk",
-		"cherrytree:trunk",
+		"cherrytree_wood",
+		"cherrytree:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"cherrytree_wood.png"},
-		S("Cherry Tree Stair"),
-		S("Cherry Tree Slab"),
+		S("Cherry Tree Wood Stair"),
+		S("Cherry Tree Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("cherrytree", "wood", "cherrytree:wood", {
-		description = "Cherry Tree",
-		tiles = {"cherrytree_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
---Support for bonemeal
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"cherrytree:sapling", grow_new_cherrytree_tree, "soil"},

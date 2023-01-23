@@ -4,6 +4,7 @@
 
 local modname = "birch"
 local modpath = minetest.get_modpath(modname)
+local mg_name = minetest.get_mapgen_setting("mg_name")
 
 -- internationalization boilerplate
 local S = minetest.get_translator(minetest.get_current_modname())
@@ -86,50 +87,58 @@ end
 -- Decoration
 --
 
-local place_on
-local biomes
-local offset
-local scale
+if mg_name ~= "singlenode" then
+	local place_on, biomes, offset, scale
 
-if minetest.get_modpath("rainf") then
-	place_on = "rainf:meadow"
-	biomes = "rainf"
-	offset = 0.01
-	scale = 0.001
-else
-	place_on = "default:dirt_with_grass"
-	biomes = "grassland"
-	offset = 0.008
-	scale = 0.001
+	if minetest.get_modpath("rainf") then
+		place_on = "rainf:meadow"
+		biomes = "rainf"
+		offset = 0.01
+		scale = 0.001
+	else
+		place_on = "default:dirt_with_grass"
+		biomes = "grassland"
+		offset = 0.008
+		scale = 0.001
+	end
+
+	local decoration_definition = {
+		name = "birch:birch_tree",
+		deco_type = "schematic",
+		place_on = {place_on},
+		sidelen = 16,
+		noise_params = {
+			offset = offset,
+			scale = scale,
+			spread = {x = 255, y = 255, z = 255},
+			seed = 32,
+			octaves = 3,
+			persist = 0.67
+		},
+		y_min = 1,
+		schematic = birch.birchtree,
+		flags = "place_center_x, place_center_z",
+		place_offset_y = 1
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {biomes}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
-
-minetest.register_decoration({
-	name = "birch:birch_tree",
-	deco_type = "schematic",
-	place_on = {place_on},
-	sidelen = 16,
-	noise_params = {
-		offset = offset,
-		scale = scale,
-		spread = {x = 255, y = 255, z = 255},
-		seed = 32,
-		octaves = 3,
-		persist = 0.67
-	},
-	biomes = {biomes},
-	y_min = 1,
-	y_max = 80,
-	schematic = birch.birchtree,
-	flags = "place_center_x, place_center_z",
-	place_offset_y = 1,
-})
 
 --
 -- Nodes
 --
 
 minetest.register_node("birch:sapling", {
-	description = S("Birch Sapling"),
+	description = S("Birch Tree Sapling"),
 	drawtype = "plantlike",
 	tiles = {"birch_sapling.png"},
 	inventory_image = "birch_sapling.png",
@@ -181,7 +190,7 @@ minetest.register_node("birch:trunk", {
 
 -- birch wood
 minetest.register_node("birch:wood", {
-	description = S("Birch Wood"),
+	description = S("Birch Wood Planks"),
 	tiles = {"birch_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
@@ -258,52 +267,58 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("birch", "wood", "birch:wood", {
+		description = S("Birch Wood"),
+		tiles = {"birch_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_birch_wood", "birch:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_birch_wood", "birch:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_birch_wood", "birch:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_birch_wood", "birch:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_birch_trunk", "birch:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_birch_trunk", "birch:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_birch_trunk", "birch:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_birch_trunk", "birch:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"birch_trunk",
-		"birch:trunk",
+		"birch_wood",
+		"birch:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"birch_wood.png"},
-		S("Birch Tree Stair"),
-		S("Birch Tree Slab"),
+		S("Birch Wood Stair"),
+		S("Birch Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("birch", "wood", "birch:wood", {
-		description = "Birch",
-		tiles = {"birch_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"birch:sapling", grow_new_birch_tree, "soil"},
 	})
 end
 
---Door
-
+-- Door
 if minetest.get_modpath("doors") ~= nil then
 	doors.register("door_birch_wood", {
-			tiles = {{ name = "birch_door_wood.png", backface_culling = true }},
-			description = S("Birch Wood Door"),
-			inventory_image = "birch_item_wood.png",
-			groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
-			recipe = {
-				{"birch:wood", "birch:wood"},
-				{"birch:wood", "birch:wood"},
-				{"birch:wood", "birch:wood"},
-			}
+		tiles = {{ name = "birch_door_wood.png", backface_culling = true }},
+		description = S("Birch Wood Door"),
+		inventory_image = "birch_item_wood.png",
+		groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
+		recipe = {
+			{"birch:wood", "birch:wood"},
+			{"birch:wood", "birch:wood"},
+			{"birch:wood", "birch:wood"},
+		}
 	})
 end
-
 
 -- Support for flowerpot
 if minetest.global_exists("flowerpot") then

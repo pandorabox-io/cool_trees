@@ -67,8 +67,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "lemontree:lemon_tree",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_grass"},
@@ -81,13 +81,22 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"deciduous_forest"},
 		y_min = 1,
-		y_max = 80,
 		schematic = modpath.."/schematics/lemontree.mts",
 		flags = "place_center_x, place_center_z, force_placement",
-		rotation = "random",
-	})
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"deciduous_forest"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -145,7 +154,7 @@ minetest.register_node("lemontree:trunk", {
 
 -- lemontree wood
 minetest.register_node("lemontree:wood", {
-	description = S("Lemon Tree Wood"),
+	description = S("Lemon Tree Wood Planks"),
 	tiles = {"lemontree_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -182,7 +191,7 @@ minetest.register_node("lemontree:leaves", {
 		else
 			return true
 		end
-    end
+	end
 })
 
 --
@@ -212,7 +221,7 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"lemontree:trunk"},
-	leaves = {"lemontree:leaves"},
+	leaves = {"lemontree:leaves", "lemontree:lemon"},
 	radius = 3,
 })
 
@@ -235,36 +244,45 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("lemontree", "wood", "lemontree:wood", {
+		description = S("Lemon Tree Wood"),
+		tiles = {"lemontree_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_lemontree_wood", "lemontree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_lemontree_wood", "lemontree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_lemontree_wood", "lemontree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_lemontree_wood", "lemontree:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_lemontree_trunk", "lemontree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_lemontree_trunk", "lemontree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_lemontree_trunk", "lemontree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_lemontree_trunk", "lemontree:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"lemontree_trunk",
-		"lemontree:trunk",
+		"lemontree_wood",
+		"lemontree:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"lemontree_wood.png"},
-		S("Lemon Tree Stair"),
-		S("Lemon Tree Slab"),
+		S("Lemon Tree Wood Stair"),
+		S("Lemon Tree Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("lemontree", "wood", "lemontree:wood", {
-		description = "Lemon Tree",
-		tiles = {"lemontree_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"lemontree:sapling", grow_new_lemontree_tree, "soil"},
 	})
 end
 
+-- Support for cork
 if minetest.get_modpath("cork") ~= nil then
 	minetest.register_node("lemontree:trunk_nobark", {
 		description = S("Lemon Tree Trunk"),

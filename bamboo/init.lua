@@ -5,6 +5,8 @@
 -- Thanks to VanessaE, Tenplus1, paramat and all others who
 -- contribute to this mod
 
+local mg_name = minetest.get_mapgen_setting("mg_name")
+
 -- internationalization boilerplate
 local S = minetest.get_translator(minetest.get_current_modname())
 
@@ -114,25 +116,36 @@ end
 -- Decoration
 --
 
-minetest.register_decoration({
-	name = "bamboo:bamboo_tree",
-	deco_type = "schematic",
-	place_on = {"default:dirt_with_grass"},
-	sidelen = 16,
-	noise_params = {
-		offset = 0.005,
-		scale = 0.001,
-		spread = {x = 240, y = 240, z = 240},
-		seed = 2776,
-		octaves = 3,
-		persist = 0.65
-	},
-	biomes = {"grassland"},
-	y_min = 2,
-	y_max = 20,
-	schematic = bamboo.bambootree,
-	flags = "place_center_x, place_center_z",
-})
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
+		name = "bamboo:bamboo_tree",
+		deco_type = "schematic",
+		place_on = {"default:dirt_with_grass"},
+		sidelen = 16,
+		noise_params = {
+			offset = 0.005,
+			scale = 0.001,
+			spread = {x = 240, y = 240, z = 240},
+			seed = 2776,
+			octaves = 3,
+			persist = 0.65
+		},
+		y_min = 2,
+		schematic = bamboo.bambootree,
+		flags = "place_center_x, place_center_z"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 20
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"grassland"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
+end
 
 --
 -- Nodes
@@ -164,7 +177,7 @@ minetest.register_node("bamboo:trunk", {
 
 -- bamboo wood
 minetest.register_node("bamboo:wood", {
-	description = S("Bamboo Wood"),
+	description = S("Bamboo Wood Planks"),
 	tiles = {"bamboo_floor.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -234,12 +247,6 @@ default.register_leafdecay({
 	radius = 3,
 })
 
-if minetest.get_modpath("bonemeal") ~= nil then
-	bonemeal:add_sapling({
-		{"bamboo:sprout", grow_new_bambootree_tree, "soil"},
-	})
-end
-
 -- Fence
 if minetest.settings:get_bool("cool_fences", true) then
 	local fence = {
@@ -259,27 +266,41 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("bamboo", "wood", "bamboo:wood", {
+		description = S("Bamboo Wood"),
+		tiles = {"bamboo_floor.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_bamboo_wood", "bamboo:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_bamboo_wood", "bamboo:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_bamboo_wood", "bamboo:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_bamboo_wood", "bamboo:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_bamboo_trunk", "bamboo:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_bamboo_trunk", "bamboo:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_bamboo_trunk", "bamboo:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_bamboo_trunk", "bamboo:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"bamboo_trunk",
-		"bamboo:trunk",
+		"bamboo_wood",
+		"bamboo:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"bamboo_floor.png"},
-		S("Bamboo Stair"),
-		S("Bamboo Slab"),
+		S("Bamboo Wood Stair"),
+		S("Bamboo Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("bamboo", "wood", "bamboo:wood", {
-		description = "Bamboo",
-		tiles = {"bamboo_floor.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
+-- Support for bonemeal
+if minetest.get_modpath("bonemeal") ~= nil then
+	bonemeal:add_sapling({
+		{"bamboo:sprout", grow_new_bambootree_tree, "soil"},
 	})
 end
 

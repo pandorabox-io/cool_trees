@@ -43,7 +43,7 @@ minetest.register_node("plumtree:plum", {
 		minetest.remove_node(pos)
 		pos.y = pos.y + 1
 		local node_above = minetest.get_node_or_nil(pos)
-		if node_above and node_above.param2 == 0 and node_above.name == "plumtree:blossom_leaves" then
+		if node_above and node_above.param2 == 0 and node_above.name == "plumtree:leaves" then
 			--20% of variation on time
 			local twenty_percent = fruit_grow_time * 0.2
 			local grow_time = math.random(fruit_grow_time - twenty_percent, fruit_grow_time + twenty_percent)
@@ -68,14 +68,10 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
+if mg_name ~= "singlenode" then
+	local place_on, biomes, offset, scale
 
-	local place_on
-	local biomes
-	local offset
-	local scale
-
-if minetest.get_modpath("rainf") then
+	if minetest.get_modpath("rainf") then
 		place_on = "rainf:meadow"
 		biomes = "rainf"
 		offset = 0.0008
@@ -87,7 +83,7 @@ if minetest.get_modpath("rainf") then
 		scale = 0.00004
 	end
 
-	minetest.register_decoration({
+	local decoration_definition = {
 		name = "plumtree:plum_tree",
 		deco_type = "schematic",
 		place_on = {place_on},
@@ -100,13 +96,22 @@ if minetest.get_modpath("rainf") then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {biomes},
 		y_min = 1,
-		y_max = 80,
 		schematic = modpath.."/schematics/plumtree.mts",
-		flags = "place_center_x, place_center_z,  force_placement",
-		rotation = "random",
-	})
+		flags = "place_center_x, place_center_z, force_placement",
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 80
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {biomes}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -114,7 +119,7 @@ end
 --
 
 minetest.register_node("plumtree:sapling", {
-	description = S("Plumtree Tree Sapling"),
+	description = S("Plum Tree Sapling"),
 	drawtype = "plantlike",
 	tiles = {"plumtree_sapling.png"},
 	inventory_image = "plumtree_sapling.png",
@@ -150,7 +155,7 @@ minetest.register_node("plumtree:sapling", {
 })
 
 minetest.register_node("plumtree:trunk", {
-	description = S("Plumtree Trunk"),
+	description = S("Plum Tree Trunk"),
 	tiles = {
 		"plumtree_trunk_top.png",
 		"plumtree_trunk_top.png",
@@ -165,7 +170,7 @@ minetest.register_node("plumtree:trunk", {
 
 -- plumtree wood
 minetest.register_node("plumtree:wood", {
-	description = S("Plumtree Wood"),
+	description = S("Plum Tree Wood Planks"),
 	tiles = {"plumtree_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -177,7 +182,7 @@ minetest.register_node("plumtree:wood", {
 
 -- plumtree tree leaves
 minetest.register_node("plumtree:leaves", {
-	description = S("Plumtree Leaves"),
+	description = S("Plum Tree Leaves"),
 	drawtype = "allfaces_optional",
 	tiles = {"plumtree_leaves.png"},
 	paramtype = "light",
@@ -208,7 +213,6 @@ minetest.register_craft({
 	recipe = {{"plumtree:trunk"}}
 })
 
-
 minetest.register_craft({
 	type = "fuel",
 	recipe = "plumtree:trunk",
@@ -223,7 +227,7 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"plumtree:trunk"},
-	leaves = {"plumtree:leaves"},
+	leaves = {"plumtree:leaves", "plumtree:plum"},
 	radius = 3,
 })
 
@@ -246,32 +250,38 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("plumtree", "wood", "plumtree:wood", {
+		description = S("Plum Tree Wood"),
+		tiles = {"plumtree_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_plumtree_wood", "plumtree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_plumtree_wood", "plumtree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_plumtree_wood", "plumtree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_plumtree_wood", "plumtree:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_plumtree_trunk", "plumtree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_plumtree_trunk", "plumtree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_plumtree_trunk", "plumtree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_plumtree_trunk", "plumtree:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"plumtree_trunk",
-		"plumtree:trunk",
+		"plumtree_wood",
+		"plumtree:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"plumtree_wood.png"},
-		S("Plum Tree Stair"),
-		S("Plum Tree Slab"),
+		S("Plum Tree Wood Stair"),
+		S("Plum Tree Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("plumtree", "wood", "plumtree:wood", {
-		description = "Plum Tree",
-		tiles = {"plumtree_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
---Support for bonemeal
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"plumtree:sapling", grow_new_plumtree_tree, "soil"},

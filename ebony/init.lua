@@ -25,8 +25,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "ebony:ebony_tree",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_rainforest_litter"},
@@ -39,15 +39,24 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"rainforest"},
 		height = 2,
 		y_min = 1,
-		y_max = 62,
 		schematic = modpath.."/schematics/ebony.mts",
 		flags = "place_center_x, place_center_z, force_placement",
 		rotation = "random",
-		place_offset_y = 0,
-	})
+		place_offset_y = 0
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 62
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"rainforest"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -107,7 +116,7 @@ minetest.register_node("ebony:trunk", {
 
 -- ebony wood
 minetest.register_node("ebony:wood", {
-	description = S("Ebony Wood"),
+	description = S("Ebony Wood Planks"),
 	tiles = {"ebony_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -155,7 +164,7 @@ minetest.register_node("ebony:creeper", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -175,7 +184,7 @@ minetest.register_node("ebony:creeper_leaves", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -195,7 +204,7 @@ minetest.register_node("ebony:liana", {
 		fixed = {-0.5, -0.5, 0.0, 0.5, 0.5, 0.0}
 	},
 	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, leafdecay = 3, leaves = 1,
+		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1,
 	},
 	sounds = default.node_sound_leaves_defaults(),
 })
@@ -252,7 +261,7 @@ minetest.register_craft({
 
 default.register_leafdecay({
 	trunks = {"ebony:trunk"},
-	leaves = {"ebony:leaves"},
+	leaves = {"ebony:leaves", "ebony:persimmon"},
 	radius = 3,
 })
 
@@ -275,30 +284,38 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("ebony", "wood", "ebony:wood", {
+		description = S("Ebony Wood"),
+		tiles = {"ebony_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_ebony_wood", "ebony:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_ebony_wood", "ebony:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_ebony_wood", "ebony:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_ebony_wood", "ebony:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_ebony_trunk", "ebony:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_ebony_trunk", "ebony:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_ebony_trunk", "ebony:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_ebony_trunk", "ebony:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"ebony_trunk",
-		"ebony:trunk",
+		"ebony_wood",
+		"ebony:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"ebony_wood.png"},
-		S("Ebony Stair"),
-		S("Ebony Slab"),
+		S("Ebony Wood Stair"),
+		S("Ebony Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("ebony", "wood", "ebony:wood", {
-		description = "Ebony",
-		tiles = {"ebony_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"ebony:sapling", grow_new_ebony_tree, "soil"},

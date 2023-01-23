@@ -18,15 +18,15 @@ local function grow_new_willow_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-5, y = pos.y, z = pos.z-5}, modpath.."/schematics/willow.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-4, y = pos.y, z = pos.z-5}, modpath.."/schematics/willow.mts", "0", nil, false)
 end
 
 --
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "willow:willow_tree",
 		deco_type = "schematic",
 		place_on = {"default:dirt"},
@@ -39,14 +39,23 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"deciduous_forest_shore"},
 		height = 2,
 		y_min = -1,
-		y_max = 62,
 		schematic = modpath.."/schematics/willow.mts",
 		flags = "place_center_x, place_center_z, force_placement",
-		rotation = "random",
-	})
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 62
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"deciduous_forest_shore"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -105,7 +114,7 @@ minetest.register_node("willow:trunk", {
 
 -- willow wood
 minetest.register_node("willow:wood", {
-	description = S("Willow Wood"),
+	description = S("Willow Wood Planks"),
 	tiles = {"willow_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -184,30 +193,38 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("willow", "wood", "willow:wood", {
+		description = S("Willow Wood"),
+		tiles = {"willow_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_willow_wood", "willow:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_willow_wood", "willow:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_willow_wood", "willow:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_willow_wood", "willow:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_willow_trunk", "willow:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_willow_trunk", "willow:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_willow_trunk", "willow:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_willow_trunk", "willow:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"willow_trunk",
-		"willow:trunk",
+		"willow_wood",
+		"willow:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"willow_wood.png"},
-		S("Willow Stair"),
-		S("Willow Slab"),
+		S("Willow Wood Stair"),
+		S("Willow Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("willow", "wood", "willow:wood", {
-		description = "Willow",
-		tiles = {"willow_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"willow:sapling", grow_new_willow_tree, "soil"},

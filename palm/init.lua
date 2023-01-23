@@ -6,6 +6,7 @@ local S = minetest.get_translator(minetest.get_current_modname())
 
 local modname = "palm"
 local modpath = minetest.get_modpath(modname)
+local mg_name = minetest.get_mapgen_setting("mg_name")
 
 local function grow_new_palm_tree(pos)
 	if not default.can_grow(pos) then
@@ -21,33 +22,44 @@ end
 -- Decoration
 --
 
-minetest.register_decoration({
-	name = "palm:palm_tree",
-	deco_type = "schematic",
-	place_on = {"default:sand"},
-		sidelen = 16,
-		noise_params = {
-			offset = 0.001,
-			scale = 0.002,
-			spread = {x = 250, y = 250, z = 250},
-			seed = 2337,
-			octaves = 3,
-			persist = 0.66
-		},
-	biomes = {"sandstone_desert_ocean", "desert_ocean"},
-	y_min = 1,
-	y_max = 2,
-	schematic = modpath.."/schematics/palmtree.mts",
-	flags = "place_center_x, place_center_z",
-	rotation = "random",
-})
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
+		name = "palm:palm_tree",
+		deco_type = "schematic",
+		place_on = {"default:sand"},
+			sidelen = 16,
+			noise_params = {
+				offset = 0.001,
+				scale = 0.002,
+				spread = {x = 250, y = 250, z = 250},
+				seed = 2337,
+				octaves = 3,
+				persist = 0.66
+			},
+		y_min = 1,
+		schematic = modpath.."/schematics/palmtree.mts",
+		flags = "place_center_x, place_center_z",
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 2
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"sandstone_desert_ocean", "desert_ocean"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
+end
 
 --
 -- Nodes
 --
 
 minetest.register_node("palm:sapling", {
-	description = S("Palm Sapling"),
+	description = S("Palm Tree Sapling"),
 	drawtype = "plantlike",
 	tiles = {"palm_sapling.png"},
 	inventory_image = "palm_sapling.png",
@@ -99,7 +111,7 @@ minetest.register_node("palm:trunk", {
 
 -- palm wood
 minetest.register_node("palm:wood", {
-	description = S("Palm Wood"),
+	description = S("Palm Wood Planks"),
 	tiles = {"palm_wood.png"},
 	is_ground_content = false,
 	groups = {wood = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
@@ -186,20 +198,6 @@ minetest.register_node("palm:candle", {
 	},
 })
 
-if minetest.get_modpath("doors") ~= nil then
-	doors.register("door_palm", {
-		tiles = {{ name = "palm_door_wood.png", backface_culling = true }},
-		description = S("Palm Door"),
-		inventory_image = "palm_door_wood_inv.png",
-		groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
-		recipe = {
-			{"palm:wood", "palm:wood"},
-			{"palm:leaves", "palm:leaves"},
-			{"palm:wood", "palm:wood"},
-		}
-	})
-end
-
 --
 -- Craftitems
 --
@@ -229,7 +227,6 @@ minetest.register_craft({
 	output = "palm:wax",
 	recipe = "palm:leaves"
 })
-
 
 minetest.register_craft({
 	output = "palm:wood 4",
@@ -278,50 +275,73 @@ default.register_leafdecay({
 -- Fence
 if minetest.settings:get_bool("cool_fences", true) then
 	local fence = {
-		description = S("Palm Tree Wood Fence"),
+		description = S("Palm Wood Fence"),
 		texture =  "palm_wood.png",
 		material = "palm:wood",
 		groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		sounds = default.node_sound_wood_defaults(),
 	}
 	default.register_fence("palm:fence", table.copy(fence))
-	fence.description = S("Palm Tree Fence Rail")
+	fence.description = S("Palm Fence Rail")
 	default.register_fence_rail("palm:fence_rail", table.copy(fence))
 
 	if minetest.get_modpath("doors") ~= nil then
-		fence.description = S("Palm Tree Fence Gate")
+		fence.description = S("Palm Fence Gate")
 		doors.register_fencegate("palm:gate", table.copy(fence))
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("palm", "wood", "palm:wood", {
+		description = S("Palm Wood"),
+		tiles = {"palm_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_palm_wood", "palm:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_palm_wood", "palm:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_palm_wood", "palm:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_palm_wood", "palm:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_palm_trunk", "palm:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_palm_trunk", "palm:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_palm_trunk", "palm:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_palm_trunk", "palm:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"palm_trunk",
-		"palm:trunk",
+		"palm_wood",
+		"palm:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"palm_wood.png"},
-		S("Palm Tree Stair"),
-		S("Palm Tree Slab"),
+		S("Palm Wood Stair"),
+		S("Palm Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("palm", "wood", "palm:wood", {
-		description = "Palm",
-		tiles = {"palm_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"palm:sapling", grow_new_palm_tree, "soil"},
 		{"palm:sapling", grow_new_palm_tree, "sand"},
+	})
+end
+
+-- Door
+if minetest.get_modpath("doors") ~= nil then
+	doors.register("door_palm", {
+		tiles = {{ name = "palm_door_wood.png", backface_culling = true }},
+		description = S("Palm Wood Door"),
+		inventory_image = "palm_door_wood_inv.png",
+		groups = {node = 1, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
+		recipe = {
+			{"palm:wood", "palm:wood"},
+			{"palm:leaves", "palm:leaves"},
+			{"palm:wood", "palm:wood"},
+		}
 	})
 end
 

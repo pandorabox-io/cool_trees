@@ -24,12 +24,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-
-	local place_on
-	local biomes
-	local offset
-	local scale
+if mg_name ~= "singlenode" then
+	local place_on, biomes, offset, scale
 
 	if minetest.get_modpath("rainf") then
 		place_on = "rainf:meadow"
@@ -43,7 +39,7 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 		scale = 0.00005
 	end
 
-	minetest.register_decoration({
+	local decoration_definition = {
 		name = "hollytree:holly_tree",
 		deco_type = "schematic",
 		place_on = {place_on},
@@ -56,13 +52,22 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {biomes},
 		y_min = 1,
-		y_max = 32,
 		schematic = modpath.."/schematics/hollytree.mts",
 		flags = "place_center_x, place_center_z, force_placement",
-		rotation = "random",
-	})
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 32
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {biomes}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -122,7 +127,7 @@ minetest.register_node("hollytree:trunk", {
 
 -- hollytree wood
 minetest.register_node("hollytree:wood", {
-	description = S("Holly Tree Wood"),
+	description = S("Holly Tree Wood Planks"),
 	tiles = {"hollytree_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -164,7 +169,6 @@ minetest.register_craft({
 	recipe = {{"hollytree:trunk"}}
 })
 
-
 minetest.register_craft({
 	type = "fuel",
 	recipe = "hollytree:trunk",
@@ -202,32 +206,38 @@ if minetest.settings:get_bool("cool_fences", true) then
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("hollytree", "wood", "hollytree:wood", {
+		description = S("Holly Tree Wood"),
+		tiles = {"hollytree_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_hollytree_wood", "hollytree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_hollytree_wood", "hollytree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_hollytree_wood", "hollytree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_hollytree_wood", "hollytree:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_hollytree_trunk", "hollytree:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_hollytree_trunk", "hollytree:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_hollytree_trunk", "hollytree:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_hollytree_trunk", "hollytree:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"hollytree_trunk",
-		"hollytree:trunk",
+		"hollytree_wood",
+		"hollytree:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"hollytree_wood.png"},
-		S("Holly Tree Stair"),
-		S("Holly Tree Slab"),
+		S("Holly Tree Wood Stair"),
+		S("Holly Tree Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("hollytree", "wood", "hollytree:wood", {
-		description = "Holly Tree",
-		tiles = {"hollytree_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
---Support for bonemeal
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"hollytree:sapling", grow_new_hollytree_tree, "soil"},

@@ -24,8 +24,8 @@ end
 -- Decoration
 --
 
-if mg_name ~= "v6" and mg_name ~= "singlenode" then
-	minetest.register_decoration({
+if mg_name ~= "singlenode" then
+	local decoration_definition = {
 		name = "jacaranda:jacaranda_tree",
 		deco_type = "schematic",
 		place_on = {"default:dirt_with_rainforest_litter"},
@@ -38,13 +38,22 @@ if mg_name ~= "v6" and mg_name ~= "singlenode" then
 			octaves = 3,
 			persist = 0.66
 		},
-		biomes = {"rainforest"},
 		y_min = 1,
-		y_max = 32,
 		schematic = modpath.."/schematics/jacaranda.mts",
 		flags = "place_center_x, place_center_z, force_placement",
-		rotation = "random",
-	})
+		rotation = "random"
+	}
+
+	if mg_name == "v6" then
+		decoration_definition.y_max = 32
+
+		minetest.register_decoration(decoration_definition)
+	else
+		decoration_definition.biomes = {"rainforest"}
+		decoration_definition.y_max = 5000
+
+		minetest.register_decoration(decoration_definition)
+	end
 end
 
 --
@@ -103,7 +112,7 @@ minetest.register_node("jacaranda:trunk", {
 
 -- jacaranda wood
 minetest.register_node("jacaranda:wood", {
-	description = S("Jacaranda Wood"),
+	description = S("Jacaranda Wood Planks"),
 	tiles = {"jacaranda_wood.png"},
 	paramtype2 = "facedir",
 	place_param2 = 0,
@@ -145,7 +154,6 @@ minetest.register_craft({
 	recipe = {{"jacaranda:trunk"}}
 })
 
-
 minetest.register_craft({
 	type = "fuel",
 	recipe = "jacaranda:trunk",
@@ -167,53 +175,59 @@ default.register_leafdecay({
 -- Fence
 if minetest.settings:get_bool("cool_fences", true) then
 	local fence = {
-		description = S("Jaceranda Tree Wood Fence"),
+		description = S("Jacaranda Wood Fence"),
 		texture =  "jacaranda_wood.png",
 		material = "jacaranda:wood",
 		groups = {choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		sounds = default.node_sound_wood_defaults(),
 	}
 	default.register_fence("jacaranda:fence", table.copy(fence))
-	fence.description = S("Jaceranda Tree Fence Rail")
+	fence.description = S("Jacaranda Fence Rail")
 	default.register_fence_rail("jacaranda:fence_rail", table.copy(fence))
 
 	if minetest.get_modpath("doors") ~= nil then
-		fence.description = S("Jaceranda Tree Fence Gate")
+		fence.description = S("Jacaranda Fence Gate")
 		doors.register_fencegate("jacaranda:gate", table.copy(fence))
 	end
 end
 
---Stairs
+-- Stairs
+if minetest.get_modpath("moreblocks") then -- stairsplus/moreblocks
+	stairsplus:register_all("jacaranda", "wood", "jacaranda:wood", {
+		description = S("Jacaranda Wood"),
+		tiles = {"jacaranda_wood.png"},
+		sunlight_propagates = true,
+		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
+		sounds = default.node_sound_wood_defaults()
+	})
+	minetest.register_alias_force("stairs:stair_jacaranda_wood", "jacaranda:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_jacaranda_wood", "jacaranda:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_jacaranda_wood", "jacaranda:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_jacaranda_wood", "jacaranda:slab_wood")
 
-if minetest.get_modpath("stairs") ~= nil then
+	-- for compatibility
+	minetest.register_alias_force("stairs:stair_jacaranda_trunk", "jacaranda:stair_wood")
+	minetest.register_alias_force("stairs:stair_outer_jacaranda_trunk", "jacaranda:stair_wood_outer")
+	minetest.register_alias_force("stairs:stair_inner_jacaranda_trunk", "jacaranda:stair_wood_inner")
+	minetest.register_alias_force("stairs:slab_jacaranda_trunk", "jacaranda:slab_wood")
+elseif minetest.get_modpath("stairs") then
 	stairs.register_stair_and_slab(
-		"jacaranda_trunk",
-		"jacaranda:trunk",
+		"jacaranda_wood",
+		"jacaranda:wood",
 		{choppy = 2, oddly_breakable_by_hand = 2, flammable = 2},
 		{"jacaranda_wood.png"},
-		S("Jacaranda Tree Stair"),
-		S("Jacaranda Tree Slab"),
+		S("Jacaranda Wood Stair"),
+		S("Jacaranda Wood Slab"),
 		default.node_sound_wood_defaults()
 	)
 end
 
--- stairsplus/moreblocks
-if minetest.get_modpath("moreblocks") then
-	stairsplus:register_all("jacaranda", "wood", "jacaranda:wood", {
-		description = "Jacaranda Tree",
-		tiles = {"jacaranda_wood.png"},
-		groups = {choppy = 2, oddly_breakable_by_hand = 1, flammable = 3},
-		sounds = default.node_sound_wood_defaults(),
-	})
-end
-
+-- Support for bonemeal
 if minetest.get_modpath("bonemeal") ~= nil then
 	bonemeal:add_sapling({
 		{"jacaranda:sapling", grow_new_jacaranda_tree, "soil"},
 	})
 end
-
-
 
 -- Support for flowerpot
 if minetest.global_exists("flowerpot") then
