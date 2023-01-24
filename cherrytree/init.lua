@@ -196,6 +196,27 @@ minetest.register_node("cherrytree:blossom_leaves", {
 	end
 })
 
+
+-- cherrytree tree leaves
+minetest.register_node("cherrytree:leaves", {
+	description = S("Cherrytree Leaves"),
+	drawtype = "allfaces_optional",
+	tiles = {"cherrytree_leaves.png"},
+	paramtype = "light",
+	walkable = true,
+	waving = 1,
+	groups = {snappy = 3, leafdecay = 3, leaves = 1, flammable = 2},
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {"cherrytree:sapling"}, rarity = 20},
+			{items = {"cherrytree:leaves"}}
+		}
+	},
+	sounds = default.node_sound_leaves_defaults(),
+	after_place_node = default.after_place_leaves,
+})
+
 --
 -- Craftitems
 --
