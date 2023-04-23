@@ -1,3 +1,5 @@
+allow_defined_top = true
+unused_args = false
 quiet = 1
 codes = true
 
@@ -8,7 +10,7 @@ exclude_files = {
 
 
 ignore = {
-	"631", "61[124]",
+	"631","61[124]",
 	"542",
 	"412",
 	"321/bit",
@@ -19,6 +21,12 @@ ignore = {
 read_globals = {
 	"minetest",
 	"default",
-	"doors"
+	"doors",
+	"stairsplus",
+	"stairs",
+	"bonemeal",
+	"flowerpot",
+	"table.copy",
 }
+
 std = "max"
