@@ -132,6 +132,7 @@ minetest.register_node("mahogany:leaves", {
 	paramtype = "light",
 	walkable = true,
 	waving = 1,
+	is_ground_content = false,
 	groups = {snappy = 3, leafdecay = 3, leaves = 1, flammable = 2},
 	drop = {
 		max_items = 1,
@@ -162,6 +163,7 @@ minetest.register_node("mahogany:creeper", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
+	is_ground_content = false,
 	groups = {
 		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
 	},
@@ -182,6 +184,7 @@ minetest.register_node("mahogany:flower_creeper", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
+	is_ground_content = false,
 	groups = {
 		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, falling_node = 1
 	},
@@ -202,6 +205,7 @@ minetest.register_node("mahogany:hanging_creeper", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, 0.0, 0.5, 0.5, 0.0}
 	},
+	is_ground_content = false,
 	groups = {
 		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1, falling_node = 1
 	},

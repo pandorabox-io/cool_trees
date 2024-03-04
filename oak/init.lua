@@ -144,6 +144,7 @@ minetest.register_node("oak:trunk", {
 		"oak_trunk_top.png",
 		"oak_trunk.png"
 	},
+	is_ground_content = false,
 	groups = {tree = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
 	sounds = default.node_sound_wood_defaults(),
 	paramtype2 = "facedir",
@@ -167,6 +168,7 @@ minetest.register_node("oak:leaves", {
 	paramtype = "light",
 	walkable = true,
 	waving = 1,
+	is_ground_content = false,
 	groups = {snappy = 3, leafdecay = 3, leaves = 1, flammable = 2},
 	drop = {
 		max_items = 1,

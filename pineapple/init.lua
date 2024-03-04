@@ -80,6 +80,7 @@ minetest.register_node("pineapple:pineapple", {
 	paramtype = "light",
 	walkable = true,
 	waving = 1,
+	is_ground_content = false,
 	groups = {snappy = 3, leafdecay = 3, leaves = 1, flammable = 2},
 	sounds = default.node_sound_leaves_defaults(),
 	after_place_node = default.after_place_leaves,
