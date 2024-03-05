@@ -189,6 +189,7 @@ minetest.register_node("cacaotree:trunk", {
 		"cacaotree_trunk_top.png",
 		"cacaotree_trunk.png"
 	},
+	is_ground_content = false,
 	groups = {tree = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
 	sounds = default.node_sound_wood_defaults(),
 	paramtype2 = "facedir",
@@ -212,6 +213,7 @@ minetest.register_node("cacaotree:leaves", {
 	paramtype = "light",
 	walkable = true,
 	waving = 1,
+	is_ground_content = false,
 	groups = {snappy = 3, leafdecay = 3, leaves = 1, flammable = 2},
 	drop = {
 		max_items = 1,
@@ -240,6 +242,7 @@ minetest.register_node("cacaotree:liana", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, 0.0, 0.5, 0.5, 0.0}
 	},
+	is_ground_content = false,
 	groups = {
 		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1,
 	},
@@ -260,6 +263,7 @@ minetest.register_node("cacaotree:flower_creeper", {
 		type = "fixed",
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
+	is_ground_content = false,
 	groups = {
 		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
 	},

@@ -135,6 +135,7 @@ minetest.register_node("palm:leaves", {
 	paramtype2 = "facedir",
 	walkable = true,
 	waving = 1,
+	is_ground_content = false,
 	groups = {snappy = 3, leafdecay = 3, leaves = 1, flammable = 2},
 	drop = {
 		max_items = 1,
@@ -161,6 +162,7 @@ minetest.register_node("palm:coconut", {
 		type = "fixed",
 		fixed = {-0.31, -0.43, -0.31, 0.31, 0.44, 0.31}
 	},
+	is_ground_content = false,
 	groups = {
 		snappy = 1, oddly_breakable_by_hand = 1, cracky = 1,
 		choppy = 1, flammable = 1, leafdecay = 3, leafdecay_drop = 1
@@ -190,6 +192,7 @@ minetest.register_node("palm:candle", {
 	light_source = 11,
 	sunlight_propagates = true,
 	walkable = false,
+	is_ground_content = false,
 	groups = {dig_immediate = 3, attached_node = 1},
 	sounds = default.node_sound_defaults(),
 	selection_box = {
