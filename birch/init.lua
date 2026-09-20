@@ -2,8 +2,6 @@
 -- Birch Tree
 --
 
-local modname = "birch"
-local modpath = minetest.get_modpath(modname)
 local mg_name = minetest.get_mapgen_setting("mg_name")
 
 -- internationalization boilerplate
@@ -80,7 +78,8 @@ local function grow_new_birch_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x - 2, y = pos.y - 1, z = pos.z - 2}, birch.birchtree, "0", nil, false)
+	minetest.place_schematic({x = pos.x - 2, y = pos.y - 1, z = pos.z - 2},
+		birch.birchtree, "0", nil, false)
 end
 
 --

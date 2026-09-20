@@ -18,7 +18,8 @@ local function grow_new_mahogany_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-3, y = pos.y, z = pos.z-3}, modpath.."/schematics/mahogany.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-3, y = pos.y, z = pos.z-3},
+		modpath.."/schematics/mahogany.mts", "0", nil, false)
 end
 
 --
@@ -164,9 +165,8 @@ minetest.register_node("mahogany:creeper", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	is_ground_content = false,
-	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
-	},
+	groups = {snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2,
+		carpet = 1, attached_node = 2, leaves = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 
@@ -185,9 +185,8 @@ minetest.register_node("mahogany:flower_creeper", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	is_ground_content = false,
-	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, falling_node = 1
-	},
+	groups = {snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2,
+		carpet = 1, attached_node = 2, falling_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 
@@ -206,9 +205,8 @@ minetest.register_node("mahogany:hanging_creeper", {
 		fixed = {-0.5, -0.5, 0.0, 0.5, 0.5, 0.0}
 	},
 	is_ground_content = false,
-	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1, falling_node = 1
-	},
+	groups = {snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2,
+		carpet = 1, attached_node = 2, leaves = 1, falling_node = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 

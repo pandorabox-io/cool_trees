@@ -1,6 +1,7 @@
 --
 -- Bald Cypress
 --
+
 local modname = "baldcypress"
 local modpath = minetest.get_modpath(modname)
 local mg_name = minetest.get_mapgen_setting("mg_name")
@@ -17,7 +18,8 @@ local function grow_new_baldcypress_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-4, y = pos.y, z = pos.z-4}, modpath.."/schematics/baldcypress.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-4, y = pos.y, z = pos.z-4},
+		modpath.."/schematics/baldcypress.mts", "0", nil, false)
 end
 
 --
@@ -156,9 +158,8 @@ minetest.register_node("baldcypress:dry_branches", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	is_ground_content = false,
-	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
-	},
+	groups = {snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2,
+		carpet = 1, attached_node = 2, leaves = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 
@@ -177,9 +178,8 @@ minetest.register_node("baldcypress:liana", {
 		type = "fixed",
 		fixed = {-0.25, -0.5, 0.0, 0.25, 0.5, 0.0}
 	},
-	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1,
-	},
+	groups = {snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2,
+		carpet = 1, attached_node = 2, leaves = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 

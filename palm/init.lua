@@ -15,7 +15,8 @@ local function grow_new_palm_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-5, y = pos.y, z = pos.z-3}, modpath.."/schematics/palmtree.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-5, y = pos.y, z = pos.z-3},
+		modpath.."/schematics/palmtree.mts", "0", nil, false)
 end
 
 --
@@ -163,10 +164,8 @@ minetest.register_node("palm:coconut", {
 		fixed = {-0.31, -0.43, -0.31, 0.31, 0.44, 0.31}
 	},
 	is_ground_content = false,
-	groups = {
-		snappy = 1, oddly_breakable_by_hand = 1, cracky = 1,
-		choppy = 1, flammable = 1, leafdecay = 3, leafdecay_drop = 1
-	},
+	groups = {snappy = 1, oddly_breakable_by_hand = 1, cracky = 1,
+		choppy = 1, flammable = 1, leafdecay = 3, leafdecay_drop = 1},
 	drop = "palm:coconut_slice 4",
 	sounds = default.node_sound_wood_defaults(),
 })

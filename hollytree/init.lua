@@ -1,6 +1,7 @@
 --
 -- Hollytree
 --
+
 local modname = "hollytree"
 local modpath = minetest.get_modpath(modname)
 local mg_name = minetest.get_mapgen_setting("mg_name")
@@ -17,7 +18,8 @@ local function grow_new_hollytree_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-4, y = pos.y, z = pos.z-4}, modpath.."/schematics/hollytree.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-4, y = pos.y, z = pos.z-4},
+		modpath.."/schematics/hollytree.mts", "0", nil, false)
 end
 
 --

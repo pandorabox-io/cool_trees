@@ -18,7 +18,8 @@ local function grow_new_ebony_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-5, y = pos.y, z = pos.z-5}, modpath.."/schematics/ebony.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-5, y = pos.y, z = pos.z-5},
+		modpath.."/schematics/ebony.mts", "0", nil, false)
 end
 
 --
@@ -165,9 +166,8 @@ minetest.register_node("ebony:creeper", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	is_ground_content = false,
-	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
-	},
+	groups = {snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2,
+		carpet = 1, attached_node = 2, leaves = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 
@@ -186,9 +186,8 @@ minetest.register_node("ebony:creeper_leaves", {
 		fixed = {-0.5, -0.5, 0.49, 0.5, 0.5, 0.5}
 	},
 	is_ground_content = false,
-	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1
-	},
+	groups = {snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2,
+		carpet = 1, attached_node = 2, leaves = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 
@@ -207,9 +206,8 @@ minetest.register_node("ebony:liana", {
 		fixed = {-0.5, -0.5, 0.0, 0.5, 0.5, 0.0}
 	},
 	is_ground_content = false,
-	groups = {
-		snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2, carpet = 1, attached_node = 2, leaves = 1,
-	},
+	groups = {snappy = 2, flammable = 3, oddly_breakable_by_hand = 3, choppy = 2,
+		carpet = 1, attached_node = 2, leaves = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 
@@ -233,7 +231,7 @@ minetest.register_node("ebony:persimmon", {
 	on_use = minetest.item_eat(4),
 	sounds = default.node_sound_leaves_defaults(),
 
-	after_place_node = function(pos, placer, itemstack)
+	after_place_node = function(pos, _, _)
 		minetest.set_node(pos, {name = "ebony:persimmon", param2 = 1})
 	end,
 })

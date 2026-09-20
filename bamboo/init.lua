@@ -169,7 +169,7 @@ minetest.register_node("bamboo:trunk", {
 	is_ground_content = false,
 	groups = {choppy = 3, oddly_breakable_by_hand = 1, flammable = 2, tree = 1},
 	sounds = default.node_sound_leaves_defaults(),
-	after_dig_node = function(pos, node, metadata, digger)
+	after_dig_node = function(pos, node, _, digger)
 		default.dig_up(pos, node, digger)
 	end,
 
@@ -219,10 +219,8 @@ minetest.register_node("bamboo:sprout", {
 	paramtype = "light",
 	sunlight_propagates = true,
 	walkable = false,
-	groups = {
-		snappy = 3, attached_node = 1, flammable = 2,
-		dig_immediate = 3, ethereal_sapling = 1
-	},
+	groups = {snappy = 3, attached_node = 1, flammable = 2,
+		dig_immediate = 3, ethereal_sapling = 1},
 	sounds = default.node_sound_defaults(),
 	selection_box = {
 		type = "fixed",

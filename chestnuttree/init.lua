@@ -29,7 +29,7 @@ minetest.register_node("chestnuttree:bur", {
 	on_use = minetest.item_eat(2),
 	sounds = default.node_sound_leaves_defaults(),
 
-	after_place_node = function(pos, placer, itemstack)
+	after_place_node = function(pos, _, _)
 		minetest.set_node(pos, {name = "chestnuttree:bur", param2 = 1})
 	end,
 })
@@ -59,7 +59,8 @@ local function grow_new_chestnuttree_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-6, y = pos.y, z = pos.z-6}, modpath.."/schematics/chestnuttree.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-6, y = pos.y, z = pos.z-6},
+		modpath.."/schematics/chestnuttree.mts", "0", nil, false)
 end
 
 --

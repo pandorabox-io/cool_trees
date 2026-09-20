@@ -30,12 +30,12 @@ minetest.register_node("lemontree:lemon", {
 	on_use = minetest.item_eat(2),
 	sounds = default.node_sound_leaves_defaults(),
 
-	after_place_node = function(pos, placer, itemstack)
+	after_place_node = function(pos, _, _)
 		minetest.set_node(pos, {name = "lemontree:lemon", param2 = 1})
 	end,
 
-	on_dig = function(pos, node, digger)
-		if digger:is_player() then
+	on_dig = function(pos, _, digger)
+		if digger and digger:is_player() then
 			local inv = digger:get_inventory()
 			if inv:room_for_item("main", "lemontree:lemon") then
 				inv:add_item("main", "lemontree:lemon")
@@ -60,7 +60,8 @@ local function grow_new_lemontree_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-2, y = pos.y, z = pos.z-2}, modpath.."/schematics/lemontree.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-2, y = pos.y, z = pos.z-2},
+		modpath.."/schematics/lemontree.mts", "0", nil, false)
 end
 
 --

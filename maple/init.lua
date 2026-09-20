@@ -18,7 +18,8 @@ local function grow_new_maple_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-3, y = pos.y-1, z = pos.z-3}, modpath.."/schematics/maple.mts", "0", nil, false)
+	minetest.place_schematic({x = pos.x-3, y = pos.y-1, z = pos.z-3},
+		modpath.."/schematics/maple.mts", "0", nil, false)
 end
 
 --

@@ -1,6 +1,7 @@
 --
 -- Plumtree
 --
+
 local modname = "plumtree"
 local modpath = minetest.get_modpath(modname)
 local mg_name = minetest.get_mapgen_setting("mg_name")
@@ -29,11 +30,11 @@ minetest.register_node("plumtree:plum", {
 	on_use = minetest.item_eat(2),
 	sounds = default.node_sound_leaves_defaults(),
 
-	after_place_node = function(pos, placer, itemstack)
+	after_place_node = function(pos, _, _)
 		minetest.set_node(pos, {name = "plumtree:plum", param2 = 1})
 	end,
 
-	on_dig = function(pos, node, digger)
+	on_dig = function(pos, _, digger)
 		if digger and digger:is_player() then
 			local inv = digger:get_inventory()
 			if inv:room_for_item("main", "plumtree:plum") then
@@ -61,7 +62,8 @@ local function grow_new_plumtree_tree(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-4, y = pos.y-1, z = pos.z-4}, modpath.."/schematics/plumtree.mts", "0", nil, true)
+	minetest.place_schematic({x = pos.x-4, y = pos.y-1, z = pos.z-4},
+		modpath.."/schematics/plumtree.mts", "0", nil, true)
 end
 
 --

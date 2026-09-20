@@ -18,7 +18,8 @@ local function grow_new_sequoia(pos)
 		return
 	end
 	minetest.remove_node(pos)
-	minetest.place_schematic({x = pos.x-7, y = pos.y-4, z = pos.z-7}, modpath.."/schematics/sequoia_03.mts", "0", nil, true)
+	minetest.place_schematic({x = pos.x-7, y = pos.y-4, z = pos.z-7},
+		modpath.."/schematics/sequoia_03.mts", "0", nil, true)
 end
 
 --
